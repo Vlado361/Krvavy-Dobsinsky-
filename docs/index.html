@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Vlastné farby (Custom Colors) - Updated Color Palette */
         :root {
@@ -21,13 +21,14 @@
 
             /* Derived/Adjusted colors */
             --color-primary-hover: #a13d3d; /* Slightly lighter primary red for hover */
+            --color-primary-active: #7a1010; /* Slightly darker primary red for active */
             --color-placeholder-bg: rgba(138, 28, 28, 0.5); /* Semi-transparent primary red for placeholders */
             --color-button-bg: rgba(51, 51, 51, 0.1); /* Light background for standard buttons (based on dark text) */
             --color-button-bg-hover: rgba(51, 51, 51, 0.2); /* Darker background for standard button hover */
             --color-input-border: rgba(51, 51, 51, 0.2); /* Subtle border for form inputs (based on dark text) */
             --color-input-bg: rgba(240, 230, 210, 0.3); /* Very light background for form inputs (based on card bg) */
-            --color-focus-ring-primary: rgba(138, 28, 28, 0.4); /* Primary red focus ring */
-            --color-focus-ring-white: rgba(255, 255, 255, 0.5); /* White focus ring for header buttons */
+            --color-focus-ring-primary: rgba(138, 28, 28, 0.5); /* Primary red focus ring, slightly more visible */
+            --color-focus-ring-white: rgba(255, 255, 255, 0.7);
             --color-footer-bg: #333333; /* Footer background (using dark text color) */
             --color-accent: var(--color-primary); /* Use primary red as the main accent color (replaces gold) */
         }
@@ -56,30 +57,39 @@
             font-family: 'Poppins', sans-serif;
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Ensure footer sticks to bottom */
-            background-color: var(--color-secondary); /* Apply main background (Beige) */
-            color: var(--color-dark-text); /* Apply default text color (Dark Gray) */
+            min-height: 100vh;
+            background-color: var(--color-secondary);
+            color: var(--color-dark-text);
         }
         .container {
-            flex-grow: 1; /* Allow main content to grow and push footer down */
+            flex-grow: 1;
         }
 
         /* Štýly pre textové elementy & Hover efekty (Styles for text elements & Hover effects) */
-        .header-title {
-            @apply text-3xl md:text-4xl font-bold relative z-10;
-            transition: color 0.3s ease;
-            cursor: default;
+        .header-title { /* Now applies to H2 */
+            @apply text-5xl sm:text-6xl lg:text-7xl font-bold relative z-10 cursor-pointer;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            /* Slightly stronger shadow for better definition */
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
         }
+        .header-title:hover {
+             /* Keep hover color distinct (e.g., lighter beige or white) */
+             color: var(--color-light-text); /* Changed hover to white for contrast */
+             text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+        }
+
         .header-subtitle {
-            @apply text-base md:text-lg relative z-10 mt-2;
+            @apply text-lg md:text-xl relative z-10 mt-2;
+             /* Slightly stronger shadow for better definition */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
         .nav-link {
-            @apply text-sm cursor-pointer text-light transition-colors duration-200;
-            transition-property: color, opacity; /* Add opacity to transition */
+            @apply text-sm cursor-pointer text-dark hover:text-primary transition-colors duration-200;
+            transition-property: color, opacity;
         }
         .nav-link:hover {
-             color: var(--color-primary); /* Hover primary red */
-             opacity: 0.8; /* Hover opacity */
+             color: var(--color-primary);
+             opacity: 0.8;
         }
 
         .section-title {
@@ -88,52 +98,52 @@
             cursor: pointer;
         }
         .section-title:hover {
-            color: var(--color-primary); /* Hover primary red */
+            color: var(--color-primary);
         }
 
         .episode-title { /* Title in main player */
-            @apply text-xl font-bold text-primary; /* Primary red */
+            @apply text-xl font-bold text-primary;
             transition: color 0.3s ease;
             cursor: pointer;
         }
         .episode-title:hover {
-            color: var(--color-dark-text); /* Darker hover */
+            color: var(--color-dark-text);
         }
 
-        .episode-date { @apply text-xs text-gray; } /* Gray text */
-        .episode-desc { @apply text-sm text-dark; } /* Dark text */
-        .footer-text { @apply text-xs text-light; } /* Light text in footer */
+        .episode-date { @apply text-xs text-gray; }
+        .episode-desc { @apply text-sm text-dark; }
+        .footer-text { @apply text-xs text-light; }
 
         /* Specific styles for titles within cards */
         .card-episode-title, .card-text-title {
-            @apply text-base font-bold text-primary; /* Primary red */
+            @apply text-base font-bold text-primary;
             transition: color 0.3s ease;
             cursor: pointer;
         }
         .card-episode-title:hover, .card-text-title:hover {
-             color: var(--color-dark-text); /* Dark text on hover */
+             color: var(--color-dark-text);
         }
 
-        .card-episode-desc { @apply text-xs leading-normal text-dark; } /* Dark text */
-        .card-text-excerpt { @apply text-sm leading-relaxed text-dark; } /* Dark text */
-        .subscribe-text { @apply text-sm leading-relaxed text-dark; } /* Dark text */
+        .card-episode-desc { @apply text-xs leading-normal text-dark; }
+        .card-text-excerpt { @apply text-sm leading-relaxed text-dark; }
+        .subscribe-text { @apply text-sm leading-relaxed text-dark; }
 
         /* Indikátor sekcie (Section indicator) - Vertical primary red line */
         .section-indicator::before {
             content: '';
             display: block;
             width: 4px;
-            height: 2.5rem; /* 40px */
-            background-color: var(--color-primary); /* Use primary red */
+            height: 2.5rem;
+            background-color: var(--color-primary);
             position: absolute;
             left: 0;
-            top: 50%; /* Center vertically */
-            transform: translateY(-50%); /* Adjust vertical centering */
+            top: 50%;
+            transform: translateY(-50%);
         }
         .section-indicator {
             position: relative;
-            padding-left: 1.25rem; /* 20px - space for the indicator */
-            height: 40px; /* Match indicator height for alignment */
+            padding-left: 1.25rem;
+            height: 40px;
             display: flex;
             align-items: center;
         }
@@ -141,20 +151,20 @@
 
         /* Načítavanie (Loading placeholder & Spinner) */
         .loading-placeholder {
-            background-color: var(--color-placeholder-bg); /* Use primary red transparent */
-            border-radius: 0.375rem; /* 6px */
+            background-color: var(--color-placeholder-bg);
+            border-radius: 0.375rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 5rem; /* Give placeholder some minimum height */
+            min-height: 5rem;
         }
 
         /* Loading Spinner Styles */
         .loading-spinner {
-            width: 2rem; /* 32px */
-            height: 2rem; /* 32px */
-            border: 4px solid rgba(255, 255, 255, 0.3); /* Light border */
-            border-top-color: var(--color-primary); /* Primary red top border */
+            width: 2rem;
+            height: 2rem;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: var(--color-primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -170,31 +180,31 @@
         audio {
             width: 100%;
             margin-top: 10px;
-            height: 35px; /* Consistent height */
-            filter: contrast(1.1) brightness(1.1); /* Subtle filter to match theme */
+            height: 35px;
+            filter: contrast(1.1) brightness(1.1);
         }
         audio::-webkit-media-controls-panel {
-          background-color: var(--color-card-bg); /* Match card background */
+          background-color: var(--color-card-bg);
           border-radius: 6px;
         }
         audio::-webkit-media-controls-play-button,
         audio::-webkit-media-controls-mute-button {
-          color: var(--color-primary); /* Use primary red for buttons */
-          background-color: rgba(138, 28, 28, 0.1); /* Light primary red background */
+          color: var(--color-primary);
+          background-color: rgba(138, 28, 28, 0.1);
           border-radius: 50%;
         }
         audio::-webkit-media-controls-play-button:hover,
         audio::-webkit-media-controls-mute-button:hover {
-           background-color: rgba(138, 28, 28, 0.2); /* Darker on hover */
+           background-color: rgba(138, 28, 28, 0.2);
         }
         audio::-webkit-media-controls-timeline {
-           background-color: var(--color-secondary); /* Beige background for timeline */
+           background-color: var(--color-secondary);
            border-radius: 4px;
            border: 1px solid rgba(51, 51, 51, 0.1);
         }
         audio::-webkit-media-controls-current-time-display,
         audio::-webkit-media-controls-time-remaining-display {
-           color: var(--color-dark-text); /* Dark text for time */
+           color: var(--color-dark-text);
            text-shadow: none;
         }
         audio::-webkit-media-controls-volume-slider {
@@ -212,11 +222,11 @@
         /* Placeholder text for empty grids - Now contains spinner */
         #all-episodes-grid:empty::before,
         #texts-grid:empty::before {
-            content: 'Načítavam obsah...';
-            position: absolute;
-            width: 1px; height: 1px; padding: 0; margin: -1px;
-            overflow: hidden; clip: rect(0, 0, 0, 0);
-            white-space: nowrap; border-width: 0;
+           content: 'Načítavam obsah...';
+           position: absolute;
+           width: 1px; height: 1px; padding: 0; margin: -1px;
+           overflow: hidden; clip: rect(0, 0, 0, 0);
+           white-space: nowrap; border-width: 0;
         }
          #all-episodes-grid:empty,
          #texts-grid:empty {
@@ -225,12 +235,12 @@
          }
          #all-episodes-grid:empty::after,
          #texts-grid:empty::after {
-             content: ''; display: block;
-             width: 2.5rem; height: 2.5rem;
-             border: 5px solid rgba(51, 51, 51, 0.2);
-             border-top-color: var(--color-primary);
-             border-radius: 50%;
-             animation: spin 1s linear infinite;
+            content: ''; display: block;
+            width: 2.5rem; height: 2.5rem;
+            border: 5px solid rgba(51, 51, 51, 0.2);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
          }
 
 
@@ -255,31 +265,56 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             transform: scale(1.05);
         }
-        .play-button svg, .read-more-button svg, .subscribe-button svg, .show-more-button svg {
+        /* Ensure SVGs in buttons have consistent size and margin */
+        .subscribe-button svg {
+             width: 1.1em; /* Slightly larger for visibility */
+             height: 1.1em;
+             margin-right: 0.6em;
+             fill: currentColor;
+        }
+        .play-button svg, .read-more-button svg, .show-more-button svg {
             width: 1em; height: 1em; margin-right: 0.5em; fill: currentColor;
         }
 
-        /* Header specific button styles */
+        /* --- UPDATED Header Button Styles --- */
         .header-button {
-             @apply inline-flex items-center justify-center bg-white bg-opacity-20 hover:bg-opacity-30 text-light font-semibold py-2 px-4 sm:px-5 rounded-lg shadow-md cursor-pointer;
-             /* Added transform transition for click effect */
-             transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out, transform 0.1s ease-in-out;
+             /* Style similar to .form-button */
+             background-color: var(--color-primary);
+             color: var(--color-light-text);
+             padding: 0.6rem 1.1rem; /* Adjusted padding */
+             border-radius: 0.375rem; /* 6px */
+             font-size: 0.875rem; /* 14px */
+             font-weight: 600; /* Semibold */
+             text-decoration: none;
+             display: inline-flex;
+             align-items: center;
+             justify-content: center;
+             border: none; /* Removed border */
+             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+             cursor: pointer;
+             transition: all 0.25s ease-out; /* Smooth transition for all properties */
+             background-size: 200% auto; /* For gradient hover */
         }
-        /* Click effect for header buttons */
+        .header-button:hover {
+            /* Gradient shift effect + scale + shadow */
+            background-image: linear-gradient(to right, var(--color-primary-hover) 0%, var(--color-primary) 50%, var(--color-primary-hover) 100%);
+            background-position: right center; /* Shift gradient on hover */
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
         .header-button:active {
-            transform: scale(0.95); /* Slightly shrink the button on click */
+            /* Darker background and slight shrink on click */
+            background-color: var(--color-primary-active);
+            background-image: none; /* Remove gradient on active */
+            transform: scale(0.98);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
         }
-
-
-        /* Focus styles for accessibility */
-         .play-button:focus, .read-more-button:focus, .subscribe-button:focus, .form-button:focus, .show-more-button:focus {
-             outline: none;
-             box-shadow: 0 0 0 3px var(--color-focus-ring-primary);
-         }
-         .header-button:focus {
-            outline: none; /* Ensure default outline is removed */
-            box-shadow: 0 0 0 3px var(--color-focus-ring-white); /* Keep white focus ring */
-         }
+        .header-button:focus-visible {
+            /* Clear focus ring using primary color */
+            outline: none;
+            box-shadow: 0 0 0 3px var(--color-focus-ring-primary);
+        }
+        /* --- End of Updated Header Button Styles --- */
 
 
         /* Štýly pre formulár (Form styles) */
@@ -302,7 +337,7 @@
         .form-textarea {
             min-height: 150px; resize: vertical;
         }
-        .form-button {
+        .form-button { /* This is the "Odoslať príbeh" button */
             background-color: var(--color-primary); color: var(--color-light-text);
             padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem;
             font-size: 0.875rem; font-weight: 700; cursor: pointer;
@@ -314,6 +349,10 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             transform: scale(1.05);
         }
+         .form-button:focus-visible {
+             outline: none;
+             box-shadow: 0 0 0 3px var(--color-focus-ring-primary);
+         }
         .form-note {
             font-size: 0.75rem; color: var(--color-gray-text);
             margin-left: 0.5rem; font-weight: 400;
@@ -363,9 +402,9 @@
 
     <div class="container mx-auto max-w-6xl">
 
-        <header class="relative overflow-hidden bg-gradient-to-b from-[--color-primary] to-[#5A0000] text-light text-center py-12 md:py-16 h-auto min-h-[300px] flex flex-col justify-center items-center shadow-lg px-4">
+        <header class="relative overflow-hidden bg-gradient-to-b from-[--color-primary] to-[#7a1010] text-secondary text-center py-12 md:py-16 h-auto min-h-[300px] flex flex-col justify-center items-center shadow-lg px-4">
             <div class="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-                <svg class="absolute top-[15%] left-[10%] w-8 h-8 text-light opacity-30 transform -rotate-12" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                <svg class="absolute top-[15%] left-[10%] w-8 h-8 opacity-30 transform -rotate-12" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                      <circle cx="8" cy="8" r="7.5"/>
                 </svg>
                 <svg class="absolute bottom-[10%] right-[12%] w-12 h-12 opacity-75 transform rotate-[25deg]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -383,23 +422,24 @@
                  </svg>
                   <svg class="absolute top-[65%] right-[30%] w-4 h-4 opacity-40 transform rotate-6 animate-twinkle animation-delay-1400" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                 </svg>
+                  </svg>
             </div>
 
-            <h1 class="header-title">Krvavý Dobšinský</h1>
+            <h2 class="header-title" onclick="showView('home', '#latest')" title="Prejsť na domovskú stránku">Krvavý Dobšinský</h2>
             <p class="header-subtitle">Mrazivé príbehy, ktoré vám nedajú spať.</p>
-            <div class="mt-8 flex flex-wrap justify-center items-center gap-4 relative z-10">
-                <a onclick="showView('subscribe')"
-                    class="header-button"
-                    aria-label="Prejsť na sekciu Odoberať">
-                    Odoberať podcast
-                </a>
-                <a onclick="showView('contact')"
-                    class="header-button"
-                    aria-label="Prejsť na sekciu Kontakt">
-                    Kontakt
-                </a>
-            </div>
+
+             <div class="mt-6 flex flex-wrap justify-center items-center gap-4 relative z-10">
+                 <a onclick="showView('subscribe')"
+                     class="header-button"
+                     aria-label="Prejsť na sekciu Odoberať">
+                     Odoberať podcast
+                 </a>
+                 <a onclick="showView('contact')"
+                     class="header-button"
+                     aria-label="Prejsť na sekciu Kontakt">
+                     Kontakt
+                 </a>
+             </div>
         </header>
 
         <nav id="main-nav" class="bg-secondary bg-opacity-90 h-[50px] flex items-center justify-center space-x-3 sm:space-x-4 md:space-x-8 lg:space-x-12 sticky top-0 z-20 text-sm shadow-md">
@@ -420,7 +460,7 @@
                     </div>
                     <article id="latest-episode-card" class="bg-card rounded-lg p-4 md:p-6 flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 min-h-[220px] shadow-lg overflow-hidden">
                         <div class="w-36 h-36 md:w-[180px] md:h-[180px] rounded-md flex-shrink-0 loading-placeholder">
-                            <div class="loading-spinner"></div>
+                             <div class="loading-spinner"></div>
                         </div>
                         <img id="latest-episode-image" src="" alt="Obrázok prehrávanej epizódy" class="w-36 h-36 md:w-[180px] md:h-[180px] rounded-md flex-shrink-0 object-cover content-placeholder shadow-md" onerror="this.onerror=null; this.src='https://placehold.co/180x180/f0e6d2/333333?text=Obrázok\\nChýba'; this.alt='Náhradný obrázok epizódy';">
                         <div class="flex-grow">
@@ -443,7 +483,7 @@
                          <h2 class="section-title">Všetky Epizódy</h2>
                     </div>
                     <div id="all-episodes-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        </div>
+                         </div>
                     <div id="show-more-container" class="text-center mt-6" style="display: none;">
                          <button id="show-more-button" class="show-more-button w-full sm:w-auto">
                              Zobraziť viac
@@ -459,16 +499,17 @@
                      <h2 class="section-title">O podcaste</h2>
                  </div>
                  <div class="bg-card rounded-lg p-6 md:p-8 shadow-lg overflow-hidden">
-                    <img src="https://i.imgur.com/F9fKCIr.png"
-                         alt="Logo podcastu Krvavý Dobšinský"
-                         class="w-32 h-32 md:w-40 md:h-40 rounded-md flex-shrink-0 object-cover mb-4 mr-6 md:mr-8 shadow-md float-left"
-                         onerror="this.style.display='none'"> <div class="about-text text-left">
-                        <p>Krvavý Dobšinský je originálny slovenský podcast plný strachu, symboliky a temnej krásy rozprávania. Už niekoľko rokov píšem a nahrávam vlastné strašidelné príbehy, ktoré čerpajú z folklóru, snov, tieňov aj z toho, čo si so sebou nesieme z detstva. Každá epizóda je napísaná autorsky – od prvého slova až po posledný dozvuk.</p>
-                        <p>Tento podcast vznikol ako osobný projekt. Bez plánov, bez produkčného tímu, len s túžbou rozprávať. Dnes má viac ako milión vypočutí a tisíce verných fanúšikov, ktorí sa vracajú pre atmosféru, akú inde nenájdu.</p>
-                        <p>Čo robí Krvavého Dobšinského výnimočným, je profesionálny zvukový dizajn, ktorý posúva príbehy ďaleko za hranice bežného rozprávania. Namiesto klasickej narácie vytváram akustický svet, kde počuť les, dych, vietor, dvere, ticho – a niekedy aj to, čo by tam byť nemalo.</p>
-                        <p>Podcast nesie meno po Pavlovi Dobšinskom, ale jeho tón je iný: temnejší, existenciálnejší, intímnejší. Ak ťa lákajú strašidelné príbehy, slovenské legendy, záhadné zmiznutia a svet, kde sa prelína realita s podvedomím – vitaj.</p>
-                        <p>Toto je podcast, ktorý nepočúvaš len ušami. Cítiš ho v tele.</p>
-                    </div>
+                     <img src="https://i.imgur.com/F9fKCIr.png"
+                          alt="Logo podcastu Krvavý Dobšinský"
+                          class="w-32 h-32 md:w-40 md:h-40 rounded-md flex-shrink-0 object-cover mb-4 mr-6 md:mr-8 shadow-md float-left"
+                          onerror="this.style.display='none'">
+                     <div class="about-text text-left">
+                         <p>Krvavý Dobšinský je originálny slovenský podcast plný strachu, symboliky a temnej krásy rozprávania. Už niekoľko rokov píšem a nahrávam vlastné strašidelné príbehy, ktoré čerpajú z folklóru, snov, tieňov aj z toho, čo si so sebou nesieme z detstva. Každá epizóda je napísaná autorsky – od prvého slova až po posledný dozvuk.</p>
+                         <p>Tento podcast vznikol ako osobný projekt. Bez plánov, bez produkčného tímu, len s túžbou rozprávať. Dnes má viac ako milión vypočutí a tisíce verných fanúšikov, ktorí sa vracajú pre atmosféru, akú inde nenájdu.</p>
+                         <p>Čo robí Krvavého Dobšinského výnimočným, je profesionálny zvukový dizajn, ktorý posúva príbehy ďaleko za hranice bežného rozprávania. Namiesto klasickej narácie vytváram akustický svet, kde počuť les, dych, vietor, dvere, ticho – a niekedy aj to, čo by tam byť nemalo.</p>
+                         <p>Podcast nesie meno po Pavlovi Dobšinskom, ale jeho tón je iný: temnejší, existenciálnejší, intímnejší. Ak ťa lákajú strašidelné príbehy, slovenské legendy, záhadné zmiznutia a svet, kde sa prelína realita s podvedomím – vitaj.</p>
+                         <p>Toto je podcast, ktorý nepočúvaš len ušami. Cítiš ho v tele.</p>
+                     </div>
                  </div>
             </div>
 
@@ -481,22 +522,22 @@
                      <p class="subscribe-text mb-4">Nové epizódy vychádzajú väčšinou každú stredu – no niekedy sa ozve aj niečo nečakané.</p>
                      <p class="subscribe-text mb-6">Pridaj si Krvavého Dobšinského medzi obľúbené a buď pri tom, keď sa opäť otvorí brána do tmy.</p>
                      <div class="flex flex-wrap gap-4">
-                          <a href="https://open.spotify.com/show/YOUR_SPOTIFY_SHOW_ID" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Odoberať na Spotify">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-spotify" viewBox="0 0 16 16" aria-hidden="true">
-                                   <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.669 11.538a.5.5 0 0 1-.686.165c-1.879-1.147-4.243-1.407-7.028-.77a.5.5 0 0 1-.222-.973c3.048-.696 5.662-.397 7.77.892a.5.5 0 0 1 .166.686m.979-2.17a.618.618 0 0 1-.858.205c-2.15-1.321-5.428-1.704-7.972-.932a.618.618 0 0 1-.28-.618c.034-.333.358-.595.681-.508 2.94.85 6.473 1.297 8.832-.078a.618.618 0 0 1 .205.858m.083-2.29a.74.74 0 0 1-1.026.271c-2.52-1.562-6.94-1.95-9.034-1.074a.739.739 0 0 1-.342-.74c.052-.43.484-.747.923-.695 2.512.94 7.473 1.412 10.088-.114a.74.74 0 0 1 .271 1.026"/>
+                          <a href="https://open.spotify.com/show/1jpZ723mEpLld7bZeZ2wdE?si=890d6112d6bb4d5c" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Odoberať na Spotify">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0M6.75 11.69c-1.743-.984-4.145-1.255-6.84-.77a.53.53 0 0 1-.243-1.023c3.01-.726 5.796-.39 7.74.855a.53.53 0 1 1-.658.738m1.043-1.647c-2.015-1.22-5.12-1.58-7.53-.9a.65.65 0 0 1-.3-.65.65.65 0 0 1 .65-.533c2.758-.78 6.114-.36 8.31.8a.65.65 0 1 1-.77.983M9.9 6.89c-2.4-1.487-6.518-1.848-8.6-.99a.78.78 0 0 1-.36-.777.78.78 0 0 1 .777-.73c2.38-.9 7.03.493 9.57 2.014a.78.78 0 1 1-.887 1.483"/>
                               </svg>
                               Spotify
                           </a>
                           <a href="https://podcasts.apple.com/sk/podcast/krvav%C3%BD-dob%C5%A1insk%C3%BD/id1608900257" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Odoberať na Apple Podcasts">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-apple" viewBox="0 0 16 16" aria-hidden="true">
-                                   <path d="M11.182.008C10.148-.03 9.07 1.05 9.07 1.05s-1.068.983-1.068 2.657c0 1.675 1.021 2.578 1.021 2.578s.929 1.01 2.328 1.01c1.4 0 2.472-1.088 2.472-1.088s1.069-1.135 1.069-2.657c0-1.522-1.069-2.657-1.069-2.657s-1.02-1.116-2.198-1.116zm-2.112 6.025c.02-.018.04-.035.062-.053s.045-.036.068-.052c.18-.128.34-.26.478-.403.138-.142.25-.304.33-.488.08-.183.12-.386.12-.61s-.04-.427-.12-.61c-.08-.184-.192-.346-.33-.488-.138-.143-.299-.275-.478-.403-.023-.017-.046-.035-.068-.052s-.043-.035-.062-.053c-.06-.05-.116-.089-.168-.115-.052-.027-.103-.04-.15-.04H8.84c-.048 0-.099.013-.15.04-.052.026-.108.065-.168.115-.02.018-.04.035-.062.053s-.045.036-.068.052c-.18.128-.34.26-.478-.403-.138-.142-.25.304-.33.488-.08.183-.12.386-.12.61s.04.427.12.61c.08.184.192.346.33.488.138-.143.299.275.478.403.023.017.046.035.068.052s.043.035.062.053c.06.05.116.089.168.115.052.027.103.04.15.04h.298c.048 0 .099-.013.15-.04.052-.026.108-.065.168-.115z"/>
-                                   <path d="M8.078 11.306c-.52-.026-1.026-.23-1.52-.638-.494-.408-.91-.94-1.26-1.6-.35-.66-.61-1.41-.79-2.24-.18-.83-.27-1.7-.27-2.58s.09-1.75.27-2.58c.18-.83.44-1.58.79-2.24.35-.66.766-1.192 1.26-1.6.494-.408 1-.612 1.52-.638.52-.026 1.03.096 1.512.362.482.266.89.644 1.217 1.134.327.49.565 1.07.712 1.735.147.665.22 1.38.22 2.145s-.073 1.48-.22 2.145c-.147.665-.385 1.245-.712 1.735-.327.49-.735.868-1.217 1.134-.482.266-.992.388-1.512.362z"/>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                <path d="M8.083 11.043c-1.26.01-2.41-.403-3.358-.963-.9-.533-1.68-1.317-2.314-2.288-.633-.97-.938-2.03-.91-3.068a5.15 5.15 0 0 1 .58-2.46c.51-.81 1.23-1.49 2.04-1.96.81-.47 1.7-.696 2.58-.676 1.01.02 1.95.41 2.75.963.79.55 1.43 1.31 1.89 2.18.46.88.7 1.87.68 2.86-.02 1.12-.43 2.18-1.12 3.06-.69.88-1.6 1.53-2.63 1.88-.18.06-.36.11-.54.15m2.63-6.623c.04-.68-.24-1.33-.67-1.88-.43-.55-.98-.9-1.6-.98-.61-.08-1.26.08-1.82.49-.56.4-.95.98-1.11 1.64-.16.66.04 1.34.49 1.88.45.54 1.08.88 1.78.91.13.01.26.01.39.01.55 0 1.1-.18 1.55-.54.45-.36.75-.85.86-1.41"/>
+                                <path d="M7.748 16c1.48 0 2.9-.5 4.03-1.49 1.13-.99 1.93-2.3 2.24-3.78-.03.01-2.13.74-3.95-.81-1.82-1.55-.98-4.34.6-5.8 1.57-1.47 3.85-1.7 5.32-.87a6.9 6.9 0 0 0-3.3-5.18c-1.4-.91-3-1.3-4.6-1.28-3.2.05-6.06 1.93-7.4 4.66-.2.4-.37.83-.5 1.28-.34 1.2-.33 2.47.04 3.68.37 1.21 1.02 2.3 1.9 3.17.88.87 1.95 1.5 3.13 1.82.61.16 1.24.24 1.87.24"/>
                               </svg>
                               Apple Podcasts
                           </a>
                           <a href="https://www.instagram.com/krvavydobsinsky/" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Sledovať na Instagrame">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16" aria-hidden="true">
-                                   <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.703.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.297-.048c.852-.04 1.433-.174 1.942-.372.526-.205.972-.478 1.417-.923.445-.444.719-.89.923-1.417.198-.51.333-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.297c-.04-.852-.174-1.433-.372-1.942a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.09-.333-1.942-.372C10.445.01 10.173 0 8 0m0 1.442c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.282.24.705.275 1.485.039.843.047 1.096.047 3.233s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.92 2.5 2.5 0 0 1-.92.598c-.283.11-.705.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.598-.92c-.11-.282-.24-.705-.276-1.485C1.449 10.39 1.442 10.137 1.442 8s.007-2.39.046-3.233c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.843-.038 1.096-.047 3.232-.047M8 3.882a4.108 4.108 0 1 0 0 8.216 4.108 4.108 0 0 0 0-8.216m0 6.774a2.666 2.666 0 1 1 0-5.332 2.666 2.666 0 0 1 0 5.332m5.705-6.774a.96.96 0 1 0 0-1.92.96.96 0 0 0 0 1.92"/>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.917 3.917 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.703.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.297-.048c.852-.04 1.433-.174 1.942-.372.526-.205.972-.478 1.417-.923.445-.444.719-.89.923-1.417.198-.51.333-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.297c-.04-.852-.174-1.433-.372-1.942a3.916 3.916 0 0 0-.923-1.417A3.916 3.916 0 0 0 13.24.42c-.51-.198-1.09-.333-1.942-.372C10.445.01 10.173 0 8 0zm0 1.442c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.233s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.389.046-3.232c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.843-.038 1.096-.047 3.232-.047M8 4.938a3.062 3.062 0 1 0 0 6.125 3.062 3.062 0 0 0 0-6.125zm0 4.688a1.625 1.625 0 1 1 0-3.25 1.625 1.625 0 0 1 0 3.25zm4.938-5.617a.96.96 0 1 0 0-1.92.96.96 0 0 0 0 1.92z"/>
                               </svg>
                               Instagram
                           </a>
@@ -554,41 +595,42 @@
         <footer class="bg-footer text-light text-center py-6 mt-auto rounded-t-xl">
             <p class="footer-text mb-2">© 2025 Krvavý Dobšinský. Všetky práva vyhradené.</p>
             <div class="flex justify-center space-x-4">
-                 <a href="https://open.spotify.com/show/YOUR_SPOTIFY_SHOW_ID" target="_blank" rel="noopener noreferrer" class="text-light hover:text-primary transition-colors" aria-label="Odoberať na Spotify">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-spotify w-5 h-5" viewBox="0 0 16 16" aria-hidden="true">
-                          <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.669 11.538a.5.5 0 0 1-.686.165c-1.879-1.147-4.243-1.407-7.028-.77a.5.5 0 0 1-.222-.973c3.048-.696 5.662-.397 7.77.892a.5.5 0 0 1 .166.686m.979-2.17a.618.618 0 0 1-.858.205c-2.15-1.321-5.428-1.704-7.972-.932a.618.618 0 0 1-.28-.618c.034-.333.358-.595.681-.508 2.94.85 6.473 1.297 8.832-.078a.618.618 0 0 1 .205.858m.083-2.29a.74.74 0 0 1-1.026.271c-2.52-1.562-6.94-1.95-9.034-1.074a.739.739 0 0 1-.342-.74c.052-.43.484-.747.923-.695 2.512.94 7.473 1.412 10.088-.114a.74.74 0 0 1 .271 1.026"/>
+                 <a href="https://open.spotify.com/show/1jpZ723mEpLld7bZeZ2wdE?si=890d6112d6bb4d5c" target="_blank" rel="noopener noreferrer" class="text-light hover:text-primary transition-colors" aria-label="Odoberať na Spotify">
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0M6.75 11.69c-1.743-.984-4.145-1.255-6.84-.77a.53.53 0 0 1-.243-1.023c3.01-.726 5.796-.39 7.74.855a.53.53 0 1 1-.658.738m1.043-1.647c-2.015-1.22-5.12-1.58-7.53-.9a.65.65 0 0 1-.3-.65.65.65 0 0 1 .65-.533c2.758-.78 6.114-.36 8.31.8a.65.65 0 1 1-.77.983M9.9 6.89c-2.4-1.487-6.518-1.848-8.6-.99a.78.78 0 0 1-.36-.777.78.78 0 0 1 .777-.73c2.38-.9 7.03.493 9.57 2.014a.78.78 0 1 1-.887 1.483"/>
                      </svg>
                  </a>
                  <a href="https://podcasts.apple.com/sk/podcast/krvav%C3%BD-dob%C5%A1insk%C3%BD/id1608900257" target="_blank" rel="noopener noreferrer" class="text-light hover:text-primary transition-colors" aria-label="Odoberať na Apple Podcasts">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-apple w-5 h-5" viewBox="0 0 16 16" aria-hidden="true">
-                          <path d="M11.182.008C10.148-.03 9.07 1.05 9.07 1.05s-1.068.983-1.068 2.657c0 1.675 1.021 2.578 1.021 2.578s.929 1.01 2.328 1.01c1.4 0 2.472-1.088 2.472-1.088s1.069-1.135 1.069-2.657c0-1.522-1.069-2.657-1.069-2.657s-1.02-1.116-2.198-1.116zm-2.112 6.025c.02-.018.04-.035.062-.053s.045-.036.068-.052c.18-.128.34-.26.478-.403.138-.142.25-.304.33-.488.08-.183.12-.386.12-.61s-.04-.427-.12-.61c-.08-.184-.192-.346-.33-.488-.138-.143-.299-.275-.478-.403-.023-.017-.046-.035-.068-.052s-.043-.035-.062-.053c-.06-.05-.116-.089-.168-.115-.052-.027-.103-.04-.15-.04H8.84c-.048 0-.099.013-.15.04-.052.026-.108.065-.168.115-.02.018-.04.035-.062.053s-.045.036-.068.052c-.18.128-.34.26-.478-.403-.138-.142-.25.304-.33.488-.08.183-.12.386-.12.61s.04.427.12.61c.08.184.192.346.33.488.138-.143.299.275.478.403.023.017.046.035.068.052s.043.035.062.053c.06.05.116.089.168.115.052.027.103.04.15.04h.298c.048 0 .099-.013.15-.04.052-.026.108-.065.168-.115z"/>
-                          <path d="M8.078 11.306c-.52-.026-1.026-.23-1.52-.638-.494-.408-.91-.94-1.26-1.6-.35-.66-.61-1.41-.79-2.24-.18-.83-.27-1.7-.27-2.58s.09-1.75.27-2.58c.18-.83.44-1.58.79-2.24.35-.66.766-1.192 1.26-1.6.494-.408 1-.612 1.52-.638.52-.026 1.03.096 1.512.362.482.266.89.644 1.217 1.134.327.49.565 1.07.712 1.735.147.665.22 1.38.22 2.145s-.073 1.48-.22 2.145c-.147.665-.385 1.245-.712 1.735-.327.49-.735.868-1.217 1.134-.482.266-.992.388-1.512.362z"/>
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M8.083 11.043c-1.26.01-2.41-.403-3.358-.963-.9-.533-1.68-1.317-2.314-2.288-.633-.97-.938-2.03-.91-3.068a5.15 5.15 0 0 1 .58-2.46c.51-.81 1.23-1.49 2.04-1.96.81-.47 1.7-.696 2.58-.676 1.01.02 1.95.41 2.75.963.79.55 1.43 1.31 1.89 2.18.46.88.7 1.87.68 2.86-.02 1.12-.43 2.18-1.12 3.06-.69.88-1.6 1.53-2.63 1.88-.18.06-.36.11-.54.15m2.63-6.623c.04-.68-.24-1.33-.67-1.88-.43-.55-.98-.9-1.6-.98-.61-.08-1.26.08-1.82.49-.56.4-.95.98-1.11 1.64-.16.66.04 1.34.49 1.88.45.54 1.08.88 1.78.91.13.01.26.01.39.01.55 0 1.1-.18 1.55-.54.45-.36.75-.85.86-1.41"/>
+                        <path d="M7.748 16c1.48 0 2.9-.5 4.03-1.49 1.13-.99 1.93-2.3 2.24-3.78-.03.01-2.13.74-3.95-.81-1.82-1.55-.98-4.34.6-5.8 1.57-1.47 3.85-1.7 5.32-.87a6.9 6.9 0 0 0-3.3-5.18c-1.4-.91-3-1.3-4.6-1.28-3.2.05-6.06 1.93-7.4 4.66-.2.4-.37.83-.5 1.28-.34 1.2-.33 2.47.04 3.68.37 1.21 1.02 2.3 1.9 3.17.88.87 1.95 1.5 3.13 1.82.61.16 1.24.24 1.87.24"/>
                      </svg>
                  </a>
                  <a href="https://www.instagram.com/krvavydobsinsky/" target="_blank" rel="noopener noreferrer" class="text-light hover:text-primary transition-colors" aria-label="Sledovať na Instagrame">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-instagram w-5 h-5" viewBox="0 0 16 16" aria-hidden="true">
-                         <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.703.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.297-.048c.852-.04 1.433-.174 1.942-.372.526-.205.972-.478 1.417-.923.445-.444.719-.89.923-1.417.198-.51.333-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.297c-.04-.852-.174-1.433-.372-1.942a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.09-.333-1.942-.372C10.445.01 10.173 0 8 0m0 1.442c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.282.24.705.275 1.485.039.843.047 1.096.047 3.233s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.92 2.5 2.5 0 0 1-.92.598c-.283.11-.705.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.598-.92c-.11-.282-.24-.705-.276-1.485C1.449 10.39 1.442 10.137 1.442 8s.007-2.39.046-3.233c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.843-.038 1.096-.047 3.232-.047M8 3.882a4.108 4.108 0 1 0 0 8.216 4.108 4.108 0 0 0 0-8.216m0 6.774a2.666 2.666 0 1 1 0-5.332 2.666 2.666 0 0 1 0 5.332m5.705-6.774a.96.96 0 1 0 0-1.92.96.96 0 0 0 0 1.92"/>
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.917 3.917 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.703.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.297-.048c.852-.04 1.433-.174 1.942-.372.526-.205.972-.478 1.417-.923.445-.444.719-.89.923-1.417.198-.51.333-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.297c-.04-.852-.174-1.433-.372-1.942a3.916 3.916 0 0 0-.923-1.417A3.916 3.916 0 0 0 13.24.42c-.51-.198-1.09-.333-1.942-.372C10.445.01 10.173 0 8 0zm0 1.442c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.233s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.389.046-3.232c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.843-.038 1.096-.047 3.232-.047M8 4.938a3.062 3.062 0 1 0 0 6.125 3.062 3.062 0 0 0 0-6.125zm0 4.688a1.625 1.625 0 1 1 0-3.25 1.625 1.625 0 0 1 0 3.25zm4.938-5.617a.96.96 0 1 0 0-1.92.96.96 0 0 0 0 1.92z"/>
                      </svg>
                  </a>
             </div>
         </footer>
+        </div>
 
-    </div> <script>
+    <script>
         // --- Configuration ---
-        const rssFeedUrl = 'https://anchor.fm/s/8db2e1ec/podcast/rss';
-        const defaultImageUrl = 'https://i.imgur.com/F9fKCIr.png';
-        const placeholderErrorImageUrl = 'https://placehold.co/180x180/f0e6d2/333333?text=Obrázok%0AChýba';
-        const maxDescriptionLengthPlayer = 200;
-        const maxDescriptionLengthGrid = 80;
-        const maxExcerptLengthTexts = 120;
-        const initialEpisodesToShowDesktop = 6;
-        const initialEpisodesToShowMobile = 3;
-        const episodeBatchSizeDesktop = 6;
-        const episodeBatchSizeMobile = 3;
+        const rssFeedUrl = 'https://anchor.fm/s/8db2e1ec/podcast/rss'; // URL for the podcast RSS feed
+        const defaultImageUrl = 'https://i.imgur.com/F9fKCIr.png'; // Default image if none found in feed
+        const placeholderErrorImageUrl = 'https://placehold.co/180x180/f0e6d2/333333?text=Obrázok%0AChýba'; // Placeholder if image fails
+        const maxDescriptionLengthPlayer = 200; // Max characters for description in the main player
+        const maxDescriptionLengthGrid = 80; // Max characters for description in episode cards
+        const maxExcerptLengthTexts = 120; // Max characters for excerpt in text cards
+        const initialEpisodesToShowDesktop = 6; // How many episodes to show initially on larger screens
+        const initialEpisodesToShowMobile = 3; // How many episodes to show initially on smaller screens
+        const episodeBatchSizeDesktop = 6; // How many more episodes to load at once on larger screens
+        const episodeBatchSizeMobile = 3; // How many more episodes to load at once on smaller screens
 
         // --- Global variables ---
-        let allPodcastItems = [];
-        let currentlyDisplayedCount = 0;
+        let allPodcastItems = []; // Array to store all parsed episode items from RSS
+        let currentlyDisplayedCount = 0; // Counter for how many episodes are currently shown in the grid
 
         // --- DOM Element References ---
         const playerSection = document.getElementById('latest');
@@ -610,30 +652,41 @@
         const aboutView = document.getElementById('about-view');
         const textsView = document.getElementById('texts-view');
         const subscribeView = document.getElementById('subscribe-view');
-        const views = document.querySelectorAll('.view');
+        const views = document.querySelectorAll('.view'); // Collection of all view divs
         const contactForm = document.getElementById('contact-form');
         const formSuccessMessage = document.getElementById('form-success-message');
         const formErrorMessage = document.getElementById('form-error-message');
 
         // --- View Management ---
+        /**
+         * Shows the specified view and hides others. Optionally scrolls to an element within the view.
+         * @param {string} viewId - The ID of the view to show (e.g., 'home', 'about').
+         * @param {string|null} [scrollToSelector=null] - Optional CSS selector for an element to scroll to.
+         */
         function showView(viewId, scrollToSelector = null) {
             console.log(`Switching to view: ${viewId}, scroll target: ${scrollToSelector || 'none'}`);
+            // Hide all views
             views.forEach(view => view.classList.remove('active'));
+            // Show the target view
             const activeView = document.getElementById(`${viewId}-view`);
             if (activeView) {
                 activeView.classList.add('active');
+                // Scroll if a selector is provided
                 if (scrollToSelector) {
                     const elementToScroll = activeView.querySelector(scrollToSelector);
                     if (elementToScroll) {
+                        // Use setTimeout to ensure the view is rendered before scrolling
                         setTimeout(() => elementToScroll.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
                     } else {
                         console.warn(`Scroll target '${scrollToSelector}' not found in view '${viewId}'. Scrolling to top.`);
-                        setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
+                        setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0); // Scroll to top as fallback
                     }
                 } else {
+                    // Scroll to top if no specific element is targeted
                     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
                 }
             } else {
+                // Fallback if the view ID is invalid
                 console.error(`View '${viewId}-view' not found. Defaulting to home.`);
                 homeView.classList.add('active');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -641,26 +694,43 @@
         }
 
         // --- Utility Functions ---
+        /**
+         * Formats a date string into Slovak locale format (DD. Mesiac RRRR).
+         * @param {string} dateString - The date string (e.g., from RSS pubDate).
+         * @returns {string} Formatted date string or original string if formatting fails.
+         */
         function formatSlovakDate(dateString) {
             if (!dateString) return '';
             try {
                 const date = new Date(dateString);
-                if (isNaN(date.getTime())) throw new Error("Invalid date string");
+                if (isNaN(date.getTime())) throw new Error("Invalid date string"); // Check for invalid date
                 return date.toLocaleDateString('sk-SK', { year: 'numeric', month: 'long', day: 'numeric' });
             } catch (e) {
                 console.error("Date formatting error:", dateString, e);
-                return dateString;
+                return dateString; // Return original string on error
             }
         }
 
+        /**
+         * Extracts plain text from an HTML string and shortens it to a max length.
+         * @param {string} htmlString - The HTML content (e.g., from RSS description).
+         * @param {number} [maxLength=100] - The maximum length of the returned text.
+         * @returns {string} Shortened plain text.
+         */
         function extractAndShortenText(htmlString, maxLength = 100) {
             if (!htmlString) return "";
+            // Create a temporary div to parse HTML
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = htmlString;
+            // Get text content, trim whitespace
             let text = (tempDiv.textContent || tempDiv.innerText || "").trim();
+            // Remove trailing URLs often added by podcast platforms
             text = text.replace(/https?:\/\/[^\s]+$/, '').trim();
+            // Shorten text if necessary
             if (text.length > maxLength) {
-                let lastSpace = text.lastIndexOf(' ', maxLength - 3);
+                // Find the last space before the limit to avoid cutting words
+                let lastSpace = text.lastIndexOf(' ', maxLength - 3); // -3 for "..."
+                // If no space found or it's too early, just cut at the limit
                 if (lastSpace === -1 || lastSpace < maxLength / 2) lastSpace = maxLength - 3;
                 return text.substring(0, lastSpace).trim() + '...';
             }
@@ -668,17 +738,28 @@
         }
 
         // --- Episode Card Creation ---
+        /**
+         * Creates an HTML article element representing a single podcast episode card.
+         * @param {Element} item - The XML <item> element from the RSS feed.
+         * @returns {HTMLElement} The created article element.
+         */
         function createEpisodeCard(item) {
+            // Extract data from the RSS item, providing defaults
             const title = item.querySelector("title")?.textContent || "Neznáma epizóda";
             const pubDate = item.querySelector("pubDate")?.textContent || "";
             const descriptionHtml = item.querySelector("content\\:encoded")?.textContent || item.querySelector("description")?.textContent || "";
             const audioUrl = item.querySelector("enclosure")?.getAttribute("url") || "";
+            // Try getting image from item, then channel, then default
             const imageUrl = item.querySelector("itunes\\:image")?.getAttribute("href")
-                            || item.closest('channel')?.querySelector("itunes\\:image")?.getAttribute("href")
-                            || defaultImageUrl;
+                             || item.closest('channel')?.querySelector("itunes\\:image")?.getAttribute("href") // Look in parent channel if item lacks image
+                             || defaultImageUrl;
+
+            // Create the card element
             const card = document.createElement('article');
-            card.dataset.fullDesc = descriptionHtml;
-            card.className = 'bg-card rounded-lg p-4 sm:p-5 flex flex-col min-h-[220px] shadow-lg hoverable-card';
+            card.dataset.fullDesc = descriptionHtml; // Store full description for later use
+            card.className = 'bg-card rounded-lg p-4 sm:p-5 flex flex-col min-h-[220px] shadow-lg hoverable-card'; // Apply styling
+
+            // Set inner HTML using template literal
             card.innerHTML = `
                 <h3 class="card-episode-title mb-1">${title}</h3>
                 <p class="episode-date mb-2">${formatSlovakDate(pubDate)}</p>
@@ -687,7 +768,7 @@
                 </p>
                 <button class="play-button mt-auto"
                         data-audio-src="${audioUrl}"
-                        data-title="${title.replace(/"/g, '"')}"
+                        data-title="${title.replace(/"/g, '"')}" /* Use HTML entity for quotes in data attribute */
                         data-img-src="${imageUrl}"
                         aria-label="Prehrať epizódu ${title.replace(/"/g, '"')}">
                     <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
@@ -698,69 +779,117 @@
 
 
         // --- Event Handlers ---
+        /**
+         * Handles clicks on "Play" buttons within episode cards. Updates the main player.
+         * @param {Event} event - The click event object.
+         */
         function handlePlayButtonClick(event) {
+            // Find the closest ancestor button
             const button = event.target.closest('.play-button');
-            if (!button) return;
+            if (!button) return; // Exit if the click wasn't on a play button or its child
+
+            // Get data from the button's data attributes
             const audioSrc = button.dataset.audioSrc;
-            const title = button.dataset.title;
-            const imgSrc = button.dataset.imgSrc || defaultImageUrl;
+            const title = button.dataset.title; // Title has quotes escaped as "
+            const imgSrc = button.dataset.imgSrc || defaultImageUrl; // Use default if src is missing
+
+            // Check if audio source exists
             if (!audioSrc) {
-                console.error("Audio source missing.");
+                console.error("Audio source missing for this episode.");
                 showModal("Chyba prehrávania", "Pre túto epizódu sa nenašiel zvukový súbor.");
                 return;
             }
+
             console.log(`Play clicked: ${title}`);
+
+            // Get full description and date from the parent card
             const parentArticle = button.closest('article');
             const fullDescriptionHtml = parentArticle?.dataset.fullDesc || '';
             const dateText = parentArticle?.querySelector('.episode-date')?.textContent || '';
-            playerTitle.textContent = title || "Neznáma epizóda";
+
+            // Update the main player elements
+            playerTitle.textContent = title || "Neznáma epizóda"; // Use the title directly
             playerDate.textContent = dateText;
             playerDescription.textContent = extractAndShortenText(fullDescriptionHtml, maxDescriptionLengthPlayer) || "Popis nie je k dispozícii.";
             playerImage.src = imgSrc;
+            // Set fallback image source on error
             playerImage.onerror = () => { playerImage.src = placeholderErrorImageUrl; playerImage.onerror = null; };
-            if (playerAudio.src !== audioSrc) {
+
+            // Load and play audio
+            if (playerAudio.src !== audioSrc) { // Load new audio only if different
                 playerAudio.src = audioSrc;
-                playerAudio.load();
+                playerAudio.load(); // Important to load the new source
                 playerAudio.play().catch(e => { console.error("Audio playback error:", e); showModal("Chyba prehrávania", `Nepodarilo sa spustiť prehrávanie: ${e.message}`); });
-            } else if (playerAudio.paused) {
+            } else if (playerAudio.paused) { // If same audio, just play if paused
                 playerAudio.play().catch(e => { console.error("Audio playback error:", e); showModal("Chyba prehrávania", `Nepodarilo sa spustiť prehrávanie: ${e.message}`); });
             }
+
+            // Show player content, hide placeholders
             playerCard.classList.add('loaded');
+
+            // Scroll the player section into view
             playerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
+        /**
+         * Handles the submission of the contact form (simulated).
+         * @param {Event} event - The form submission event.
+         */
         function handleContactFormSubmit(event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent actual form submission
+            // Hide previous messages
             formSuccessMessage.style.display = 'none';
             formErrorMessage.style.display = 'none';
+
+            // Basic validation: check if story textarea is filled
             const storyTextarea = document.getElementById('story');
             const storyText = storyTextarea.value.trim();
             if (!storyText) {
                 formErrorMessage.textContent = 'Chyba: Pole "Váš príbeh" je povinné.';
                 formErrorMessage.style.display = 'block';
-                storyTextarea.focus();
-                return;
+                storyTextarea.focus(); // Focus the required field
+                return; // Stop submission
             }
+
+            // Log form data (simulation - replace with actual submission logic)
             console.log("Form submitted (simulation):", Object.fromEntries(new FormData(contactForm)));
+
+            // Show success message
             formSuccessMessage.style.display = 'block';
-            contactForm.reset();
+            contactForm.reset(); // Clear the form
+
+            // Hide success message after a delay
             setTimeout(() => { formSuccessMessage.style.display = 'none'; }, 5000);
         }
 
+        /**
+         * Handles clicks on the "Show More" button to load more episodes.
+         */
         function handleShowMoreClick() {
-            const isMobile = window.innerWidth < 640;
+            // Determine batch size based on screen width
+            const isMobile = window.innerWidth < 640; // Tailwind's 'sm' breakpoint
             const currentBatchSize = isMobile ? episodeBatchSizeMobile : episodeBatchSizeDesktop;
             console.log(`Showing next batch of ${currentBatchSize} episodes...`);
+
+            // Calculate the range of items to add
             const currentGridCount = allEpisodesGrid.children.length;
-            const startIndex = currentGridCount;
-            const endIndex = startIndex + currentBatchSize;
+            const startIndex = currentGridCount; // Start from the next item
+            const endIndex = startIndex + currentBatchSize; // End before this index
+
+            // Get the next batch of items from the stored array
             const itemsToAppend = allPodcastItems.slice(startIndex, endIndex);
+
+            // Append new cards to the grid
             itemsToAppend.forEach(item => {
                 try { allEpisodesGrid.appendChild(createEpisodeCard(item)); }
-                catch(e) { console.error("Error creating additional card:", e); }
+                catch(e) { console.error("Error creating additional card:", e); } // Log errors during card creation
             });
+
+            // Update the displayed count
             currentlyDisplayedCount = allEpisodesGrid.children.length;
             console.log(`Now displaying ${currentlyDisplayedCount} episodes.`);
+
+            // Hide the "Show More" button if all items are displayed
             if (currentlyDisplayedCount >= allPodcastItems.length) {
                 showMoreContainer.style.display = 'none';
                 console.log("All episodes displayed.");
@@ -768,26 +897,33 @@
         }
 
         // --- Data Loading ---
+        /**
+         * Fetches and parses the RSS feed, then populates the player and episode grid.
+         */
         function loadRssData() {
             console.log("Loading RSS:", rssFeedUrl);
             fetch(rssFeedUrl)
                 .then(response => {
+                    // Check for network errors
                     if (!response.ok) throw new Error(`Network error: ${response.statusText} (${response.status})`);
-                    return response.text();
+                    return response.text(); // Get response body as text
                 })
                 .then(str => {
+                    // Parse the XML string
                     const parser = new window.DOMParser();
                     const data = parser.parseFromString(str, "text/xml");
+                    // Check for XML parsing errors
                     const parseError = data.querySelector("parsererror");
                     if (parseError) throw new Error(`XML Parse Error: ${parseError.textContent}`);
-                    console.log("RSS Parsed.");
-                    return data;
+                    console.log("RSS Parsed successfully.");
+                    return data; // Return the parsed XML document
                 })
                 .then(data => {
+                    // Extract all <item> elements (episodes)
                     allPodcastItems = Array.from(data.querySelectorAll("item"));
-                    if (allPodcastItems.length === 0) throw new Error("No episode items found.");
+                    if (allPodcastItems.length === 0) throw new Error("No episode items found in the RSS feed.");
 
-                    // Populate Player
+                    // --- Populate Player with the latest episode (first item) ---
                     const firstItem = allPodcastItems[0];
                     try {
                         const title = firstItem.querySelector("title")?.textContent || "Neznámy názov";
@@ -795,74 +931,96 @@
                         const descriptionHtml = firstItem.querySelector("content\\:encoded")?.textContent || firstItem.querySelector("description")?.textContent || "";
                         const audioUrl = firstItem.querySelector("enclosure")?.getAttribute("url") || "";
                         const imageUrl = firstItem.querySelector("itunes\\:image")?.getAttribute("href") || data.querySelector("channel > itunes\\:image")?.getAttribute("href") || defaultImageUrl;
+
+                        // Update player elements
                         playerTitle.textContent = title;
                         playerDate.textContent = formatSlovakDate(pubDate);
                         playerDescription.textContent = extractAndShortenText(descriptionHtml, maxDescriptionLengthPlayer);
                         playerImage.src = imageUrl;
-                        playerImage.onerror = () => { playerImage.src = placeholderErrorImageUrl; playerImage.onerror = null; };
+                        playerImage.onerror = () => { playerImage.src = placeholderErrorImageUrl; playerImage.onerror = null; }; // Fallback
                         playerAudio.src = audioUrl;
-                        playerCard.classList.add('loaded');
-                        rssError.style.display = 'none';
+                        playerCard.classList.add('loaded'); // Show player content
+                        rssError.style.display = 'none'; // Hide any previous error
                     } catch (e) {
+                        // Handle errors during player population
                         console.error("Error processing latest episode:", e);
                         rssError.textContent = 'Chyba pri spracovaní najnovšej epizódy.';
                         rssError.style.display = 'block';
-                        playerCard.classList.add('loaded');
+                        // Show player placeholders with error state
+                        playerCard.classList.add('loaded'); // Still mark as loaded to hide spinner
                         playerTitle.textContent = 'Chyba'; playerDate.textContent = '-'; playerDescription.textContent = 'Nepodarilo sa načítať.'; playerImage.src = placeholderErrorImageUrl; playerImage.style.display = 'block'; playerAudio.style.display = 'none';
                     }
 
-                    // Populate Initial Grid
-                    allEpisodesGrid.innerHTML = '';
+                    // --- Populate Initial Episode Grid ---
+                    allEpisodesGrid.innerHTML = ''; // Clear previous grid content (if any)
                     const isMobile = window.innerWidth < 640;
                     const numEpisodesToDisplay = isMobile ? initialEpisodesToShowMobile : initialEpisodesToShowDesktop;
-                    const initialItems = allPodcastItems.slice(0, numEpisodesToDisplay);
+                    const initialItems = allPodcastItems.slice(0, numEpisodesToDisplay); // Get the first batch
+
+                    // Create and append cards for the initial batch
                     initialItems.forEach(item => {
                          try { allEpisodesGrid.appendChild(createEpisodeCard(item)); }
-                         catch(e) { console.error("Error creating initial card:", e); }
+                         catch(e) { console.error("Error creating initial card:", e); } // Log errors
                     });
-                    currentlyDisplayedCount = allEpisodesGrid.children.length;
+                    currentlyDisplayedCount = allEpisodesGrid.children.length; // Update count
                     console.log(`Initially displaying ${currentlyDisplayedCount} episodes.`);
 
-                    // Setup Show More Button
+                    // --- Setup Show More Button ---
                     if (allPodcastItems.length > currentlyDisplayedCount) {
-                        showMoreContainer.style.display = 'block';
+                        showMoreContainer.style.display = 'block'; // Show button if more items exist
                     } else {
-                        showMoreContainer.style.display = 'none';
+                        showMoreContainer.style.display = 'none'; // Hide if all items are shown
                     }
+
+                    // Handle case where cards couldn't be created even if items exist
                     if (allEpisodesGrid.children.length === 0 && allPodcastItems.length > 0) {
                          allEpisodesError.textContent = 'Nepodarilo sa zobraziť epizódy (chyba pri vytváraní kariet).';
                          allEpisodesError.style.display = 'block';
-                         showMoreContainer.style.display = 'none';
+                         showMoreContainer.style.display = 'none'; // Hide button if grid is empty
                     } else {
-                         allEpisodesError.style.display = 'none';
+                         allEpisodesError.style.display = 'none'; // Hide error message if grid populated
                     }
                 })
                 .catch(error => {
+                    // Handle fetch or parsing errors
                     console.error("Failed to load/process RSS feed:", error);
-                    rssError.textContent = `Chyba načítania podcastu: ${error.message}. Skúste obnoviť stránku.`;
+                    const errorMsg = `Chyba načítania podcastu: ${error.message}. Skúste obnoviť stránku.`;
+                    // Display error messages in relevant sections
+                    rssError.textContent = errorMsg;
                     rssError.style.display = 'block';
                     allEpisodesError.textContent = `Chyba načítania epizód: ${error.message}.`;
                     allEpisodesError.style.display = 'block';
-                    playerCard.classList.add('loaded');
+                    // Update player to show error state
+                    playerCard.classList.add('loaded'); // Hide spinner
                     playerTitle.textContent = 'Chyba'; playerDate.textContent = '-'; playerDescription.textContent = 'Nepodarilo sa načítať dáta.'; playerImage.src = placeholderErrorImageUrl; playerImage.style.display = 'block'; playerAudio.style.display = 'none';
+                    // Clear grid and show error
                     allEpisodesGrid.innerHTML = `<p class="col-span-full text-center text-primary p-4">${allEpisodesError.textContent}</p>`;
-                    showMoreContainer.style.display = 'none';
+                    showMoreContainer.style.display = 'none'; // Hide show more button on error
                 });
         }
 
+        /**
+         * Loads placeholder data for the "Texts" section.
+         * (Replace with actual data fetching if available)
+         */
         function loadTextsData() {
-            console.log("Loading texts data (placeholders)...");
-            textsGrid.innerHTML = '';
+            console.log("Loading texts data (using placeholders)...");
+            textsGrid.innerHTML = ''; // Clear existing grid
+            // Placeholder data (replace with actual data source)
             const placeholderTexts = [
                 { title: "Prepis: Zmiznutie v lese", excerpt: "Hlboko v hore sa stratil mladý muž. Nikdy ho nenašli, no miestni hovoria o šepotoch medzi stromami a svetlách, ktoré tam nemajú čo robiť...", link: "#" },
                 { title: "Bonus: Pôvod legendy o poludnici", excerpt: "Poludnica, bytosť trestajúca tých, čo nedodržiavajú poludňajší pokoj. Aké sú korene tejto strašidelnej postavy slovanského folklóru?", link: "#" },
                 { title: "Prepis: Dom na konci ulice", excerpt: "Opustený dom, ktorý láka deti svojimi tajomstvami. Ale čo ak dom nechce, aby odišli? Príbeh inšpirovaný skutočnými udalosťami.", link: "#" }
             ];
+
+            // Handle empty state
             if (placeholderTexts.length === 0) {
                 textsGrid.innerHTML = `<p class="col-span-full text-center text-dark p-4">Momentálne nie sú k dispozícii žiadne texty.</p>`;
                 textsError.style.display = 'none';
                 return;
             }
+
+            // Create and append cards for placeholder texts
             placeholderTexts.forEach(text => {
                 try {
                     const card = document.createElement('article');
@@ -873,7 +1031,8 @@
                              ${extractAndShortenText(text.excerpt, maxExcerptLengthTexts)}
                          </p>
                          <button class="read-more-button mt-auto"
-                                 onclick="showModal('Text ešte nie je dostupný', 'Obsah pre \\"${text.title.replace(/"/g, '"')}\\" bude čoskoro pridaný.')"
+                                 /* Use showModal for placeholders, replace onclick with actual link/action later */
+                                 onclick="showModal('Text ešte nie je dostupný', 'Obsah pre \\'${text.title.replace(/"/g, '"')}\\' bude čoskoro pridaný.')" /* Escaped quotes */
                                  aria-label="Čítať viac o ${text.title.replace(/"/g, '"')}">
                              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-book-half" viewBox="0 0 16 16" aria-hidden="true">
                                  <path d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388 1.17.953.712 1.04 1.73.108 2.686-.744.75-1.898 1.134-3.174 1.233C11.253 7.128 10 6.6 8.5 5.66z"/>
@@ -884,45 +1043,66 @@
                     textsGrid.appendChild(card);
                 } catch (e) { console.error("Error creating text card:", e); }
             });
-            textsError.style.display = 'none';
+            textsError.style.display = 'none'; // Hide error if placeholders loaded
             console.log(`Populated texts grid with ${textsGrid.children.length} placeholders.`);
         }
 
+        /**
+         * Displays a simple modal dialog.
+         * @param {string} title - The title of the modal.
+         * @param {string} message - The message content of the modal.
+         */
         function showModal(title, message) {
+            // Remove any existing modal first
             const existingModal = document.getElementById('simple-modal');
             if (existingModal) existingModal.remove();
+
+            // Create modal elements
             const modalOverlay = document.createElement('div');
             modalOverlay.id = 'simple-modal';
-            modalOverlay.className = 'fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4';
+            modalOverlay.className = 'fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4'; // Tailwind classes for overlay
+            // Accessibility attributes
             modalOverlay.setAttribute('role', 'dialog');
             modalOverlay.setAttribute('aria-modal', 'true');
             modalOverlay.setAttribute('aria-labelledby', 'modal-title');
             modalOverlay.setAttribute('aria-describedby', 'modal-message');
+
             const modalContent = document.createElement('div');
-            modalContent.className = 'bg-card text-dark p-6 rounded-lg shadow-xl max-w-sm w-full';
+            modalContent.className = 'bg-card text-dark p-6 rounded-lg shadow-xl max-w-sm w-full'; // Tailwind classes for content box
+
             const modalTitle = document.createElement('h3');
             modalTitle.id = 'modal-title';
-            modalTitle.className = 'text-xl font-bold text-primary mb-3';
+            modalTitle.className = 'text-xl font-bold text-primary mb-3'; // Style title
             modalTitle.textContent = title;
+
             const modalMessage = document.createElement('p');
             modalMessage.id = 'modal-message';
-            modalMessage.className = 'text-sm mb-4';
+            modalMessage.className = 'text-sm mb-4'; // Style message
             modalMessage.textContent = message;
+
             const closeButton = document.createElement('button');
-            closeButton.className = 'form-button mt-4 w-full';
+            closeButton.className = 'form-button mt-4 w-full'; // Reuse form button style
             closeButton.textContent = 'Zavrieť';
-            closeButton.onclick = () => modalOverlay.remove();
+            closeButton.onclick = () => modalOverlay.remove(); // Close action
+
+            // Assemble modal
             modalContent.appendChild(modalTitle);
             modalContent.appendChild(modalMessage);
             modalContent.appendChild(closeButton);
             modalOverlay.appendChild(modalContent);
+
+            // Add to body and focus button
             document.body.appendChild(modalOverlay);
             closeButton.focus();
+
+            // Close modal on overlay click
             modalOverlay.addEventListener('click', (event) => { if (event.target === modalOverlay) modalOverlay.remove(); });
+
+            // Close modal on Escape key press
             function handleEscape(event) {
                 if (event.key === 'Escape') {
                     modalOverlay.remove();
-                    document.removeEventListener('keydown', handleEscape);
+                    document.removeEventListener('keydown', handleEscape); // Clean up listener
                 }
             }
             document.addEventListener('keydown', handleEscape);
@@ -930,13 +1110,25 @@
 
 
         // --- Initialization ---
+        // Run functions after the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', () => {
             console.log("DOM fully loaded and parsed. Initializing page functions.");
-            allEpisodesGrid.addEventListener('click', handlePlayButtonClick);
+            // Add event listeners
+            allEpisodesGrid.addEventListener('click', handlePlayButtonClick); // Use event delegation for play buttons
             if (showMoreButton) showMoreButton.addEventListener('click', handleShowMoreClick);
             if (contactForm) contactForm.addEventListener('submit', handleContactFormSubmit);
+
+            // Load initial data
             loadRssData();
-            loadTextsData();
+            loadTextsData(); // Load text placeholders (or real data if implemented)
+
+             // Ensure quotes in data attributes are handled correctly
+             document.querySelectorAll('.play-button[data-title], .read-more-button[aria-label*="Čítať viac o"]').forEach(button => {
+                 // The " entity should be handled correctly by the browser when reading dataset or attributes.
+                 // If issues arise, it might be related to how the onclick handler string is parsed.
+                 // Using event listeners instead of inline onclick is generally more robust.
+             });
+
         });
 
     </script>
