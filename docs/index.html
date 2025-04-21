@@ -31,6 +31,7 @@
             --color-focus-ring-white: rgba(255, 255, 255, 0.7);
             --color-footer-bg: #333333; /* Footer background (using dark text color) */
             --color-accent: var(--color-primary); /* Use primary red as the main accent color (replaces gold) */
+            --color-iris-yellow: #FFBF00; /* Added for the iris color */
         }
 
         /* Apply custom colors using utility classes (optional but can be helpful) */
@@ -60,10 +61,8 @@
             min-height: 100vh;
             background-color: var(--color-secondary);
             color: var(--color-dark-text);
-            /* === MOBILE OPTIMIZATION === */
             overflow-x: hidden; /* Prevent horizontal scroll */
             overscroll-behavior-y: contain; /* Prevent scroll chaining (pull-to-refresh effect) */
-            /* === END OF UPDATE === */
         }
         .container {
             flex-grow: 1;
@@ -267,12 +266,9 @@
             transform: scale(1.05);
         }
         /* Ensure SVGs in buttons have consistent size and margin */
-        .subscribe-button svg {
-             width: 1.1em; /* Slightly larger for visibility */
-             height: 1.1em;
-             margin-right: 0.6em;
-             fill: currentColor;
-        }
+        /* Removed SVG specific style as icons are removed from subscribe buttons */
+        /* .subscribe-button svg { ... } */
+
         .play-button svg, .read-more-button svg, .show-more-button svg {
             width: 1em; height: 1em; margin-right: 0.5em; fill: currentColor;
         }
@@ -397,6 +393,9 @@
              background-color: var(--color-primary-hover); transform: scale(1.03);
          }
 
+        /* Hidden class for Netlify honeypot */
+        .hidden { display: none; }
+
     </style>
 </head>
 <body class="bg-secondary text-dark">
@@ -405,12 +404,13 @@
 
         <header class="relative overflow-hidden bg-gradient-to-b from-[--color-primary] to-[#7a1010] text-secondary text-center py-12 md:py-16 h-auto min-h-[300px] flex flex-col justify-center items-center shadow-lg px-4">
             <div class="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-                <svg class="absolute top-[15%] left-[10%] w-8 h-8 opacity-30 transform -rotate-12" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                     <circle cx="8" cy="8" r="7.5"/>
+                <svg class="absolute top-[15%] left-[10%] w-8 h-8 opacity-30 transform -rotate-12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                     <circle cx="8" cy="8" r="7.5" fill="#FFBF00"/>
                 </svg>
                 <svg class="absolute bottom-[10%] right-[12%] w-12 h-12 opacity-75 transform rotate-[25deg]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                      <circle cx="10" cy="10" r="7" fill="var(--color-primary)"/>
-                     <ellipse cx="10" cy="10" rx="6" ry="3" fill="#FFBF00"/> <ellipse cx="10" cy="10" rx="1.5" ry="2.5" fill="var(--color-dark-text)"/>
+                     <ellipse cx="10" cy="10" rx="6" ry="3" fill="#FFBF00"/>
+                     <ellipse cx="10" cy="10" rx="1.5" ry="2.5" fill="var(--color-dark-text)"/>
                 </svg>
                 <svg class="absolute top-[20%] right-[15%] w-4 h-4 opacity-40 animate-twinkle" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
@@ -421,10 +421,10 @@
                  <svg class="absolute top-[55%] left-[5%] w-3 h-3 opacity-30 transform rotate-[-15deg]" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                  </svg>
-                  <svg class="absolute top-[65%] right-[30%] w-4 h-4 opacity-40 transform rotate-6 animate-twinkle animation-delay-1400" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                  <svg class="hidden sm:block absolute top-[65%] right-[30%] w-4 h-4 opacity-40 transform rotate-6 animate-twinkle animation-delay-1400" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                   </svg>
-            </div>
+                  </div>
 
             <h2 class="header-title" onclick="showView('home', '#latest')" title="Prejsť na domovskú stránku">Krvavý Dobšinský</h2>
             <p class="header-subtitle">Mrazivé príbehy, ktoré vám nedajú spať.</p>
@@ -523,28 +523,17 @@
                      <p class="subscribe-text mb-6">Pridaj si Krvavého Dobšinského medzi obľúbené a buď pri tom, keď sa opäť otvorí brána do tmy.</p>
                      <div class="flex flex-wrap gap-4">
                           <a href="https://open.spotify.com/show/1jpZ723mEpLld7bZeZ2wdE?si=890d6112d6bb4d5c" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Odoberať na Spotify">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0M6.75 11.69c-1.743-.984-4.145-1.255-6.84-.77a.53.53 0 0 1-.243-1.023c3.01-.726 5.796-.39 7.74.855a.53.53 0 1 1-.658.738m1.043-1.647c-2.015-1.22-5.12-1.58-7.53-.9a.65.65 0 0 1-.3-.65.65.65 0 0 1 .65-.533c2.758-.78 6.114-.36 8.31.8a.65.65 0 1 1-.77.983M9.9 6.89c-2.4-1.487-6.518-1.848-8.6-.99a.78.78 0 0 1-.36-.777.78.78 0 0 1 .777-.73c2.38-.9 7.03.493 9.57 2.014a.78.78 0 1 1-.887 1.483"/>
-                              </svg>
                               Spotify
                           </a>
                           <a href="https://podcasts.apple.com/sk/podcast/krvav%C3%BD-dob%C5%A1insk%C3%BD/id1608900257" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Odoberať na Apple Podcasts">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                                <path d="M8.083 11.043c-1.26.01-2.41-.403-3.358-.963-.9-.533-1.68-1.317-2.314-2.288-.633-.97-.938-2.03-.91-3.068a5.15 5.15 0 0 1 .58-2.46c.51-.81 1.23-1.49 2.04-1.96.81-.47 1.7-.696 2.58-.676 1.01.02 1.95.41 2.75.963.79.55 1.43 1.31 1.89 2.18.46.88.7 1.87.68 2.86-.02 1.12-.43 2.18-1.12 3.06-.69.88-1.6 1.53-2.63 1.88-.18.06-.36.11-.54.15m2.63-6.623c.04-.68-.24-1.33-.67-1.88-.43-.55-.98-.9-1.6-.98-.61-.08-1.26.08-1.82.49-.56.4-.95.98-1.11 1.64-.16.66.04 1.34.49 1.88.45.54 1.08.88 1.78.91.13.01.26.01.39.01.55 0 1.1-.18 1.55-.54.45-.36.75-.85.86-1.41"/>
-                                <path d="M7.748 16c1.48 0 2.9-.5 4.03-1.49 1.13-.99 1.93-2.3 2.24-3.78-.03.01-2.13.74-3.95-.81-1.82-1.55-.98-4.34.6-5.8 1.57-1.47 3.85-1.7 5.32-.87a6.9 6.9 0 0 0-3.3-5.18c-1.4-.91-3-1.3-4.6-1.28-3.2.05-6.06 1.93-7.4 4.66-.2.4-.37.83-.5 1.28-.34 1.2-.33 2.47.04 3.68.37 1.21 1.02 2.3 1.9 3.17.88.87 1.95 1.5 3.13 1.82.61.16 1.24.24 1.87.24"/>
-                              </svg>
                               Apple Podcasts
                           </a>
                           <a href="https://www.instagram.com/krvavydobsinsky/" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Sledovať na Instagrame">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                                <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.917 3.917 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.703.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.297-.048c.852-.04 1.433-.174 1.942-.372.526-.205.972-.478 1.417-.923.445-.444.719-.89.923-1.417.198-.51.333-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.297c-.04-.852-.174-1.433-.372-1.942a3.916 3.916 0 0 0-.923-1.417A3.916 3.916 0 0 0 13.24.42c-.51-.198-1.09-.333-1.942-.372C10.445.01 10.173 0 8 0zm0 1.442c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.233s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.389.046-3.232c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.843-.038 1.096-.047 3.232-.047M8 4.938a3.062 3.062 0 1 0 0 6.125 3.062 3.062 0 0 0 0-6.125zm0 4.688a1.625 1.625 0 1 1 0-3.25 1.625 1.625 0 0 1 0 3.25zm4.938-5.617a.96.96 0 1 0 0-1.92.96.96 0 0 0 0 1.92z"/>
-                              </svg>
                               Instagram
                           </a>
                      </div>
                  </div>
             </div>
-
             <div id="contact-view" class="view">
                  <div class="section-indicator mb-5">
                      <h2 class="section-title">Kontaktujte ma</h2>
@@ -554,8 +543,12 @@
                      <p class="text-dark mb-4 leading-relaxed">Možno ste ho zažili na vlastnej koži. Možno vám ho rozprávala stará mama. Možno sa stal… a možno nie.</p>
                      <p class="text-dark mb-6 leading-relaxed">Ak vo vás niečo zostalo – pocit, spomienka, príbeh – napíšte mi. Občas vyberiem niektorý z nich a spracujem ho do epizódy podcastu.</p>
                      <p class="text-dark mb-8 font-semibold">Nebojte sa – stačia slová. Atmosféru už doladím ja.</p>
-                     <form id="contact-form" action="#" method="POST" onsubmit="handleContactFormSubmit(event)">
-                         <div class="mb-4">
+
+                     <form id="contact-form" name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+                        <p class="hidden">
+                            <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
+                        </p>
+                        <div class="mb-4">
                              <label for="name" class="form-label">Vaše meno alebo prezývka <span class="form-note">(nepovinné)</span></label>
                              <input type="text" id="name" name="name" class="form-input" autocomplete="name">
                          </div>
@@ -575,9 +568,7 @@
                              <button type="submit" class="form-button">Odoslať príbeh</button>
                          </div>
                      </form>
-                     <p id="form-success-message" class="mt-4 text-green-700 font-semibold" style="display: none;">Ďakujem! Váš príbeh bol úspešne odoslaný (simulácia).</p>
-                      <p id="form-error-message" class="mt-4 text-primary font-semibold" style="display: none;">Chyba: Vyplňte prosím pole "Váš príbeh".</p>
-                 </div>
+                     </div>
             </div>
 
             <div id="texts-view" class="view">
@@ -592,27 +583,9 @@
 
         </main>
 
-        <footer class="bg-footer text-light text-center py-6 mt-auto rounded-t-xl">
+        <footer class="bg-footer text-light text-center py-6 mt-auto">
             <p class="footer-text mb-2">© 2025 Krvavý Dobšinský. Všetky práva vyhradené.</p>
-            <div class="flex justify-center space-x-4">
-                 <a href="https://open.spotify.com/show/1jpZ723mEpLld7bZeZ2wdE?si=890d6112d6bb4d5c" target="_blank" rel="noopener noreferrer" class="text-light hover:text-primary transition-colors" aria-label="Odoberať na Spotify">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16" aria-hidden="true">
-                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0M6.75 11.69c-1.743-.984-4.145-1.255-6.84-.77a.53.53 0 0 1-.243-1.023c3.01-.726 5.796-.39 7.74.855a.53.53 0 1 1-.658.738m1.043-1.647c-2.015-1.22-5.12-1.58-7.53-.9a.65.65 0 0 1-.3-.65.65.65 0 0 1 .65-.533c2.758-.78 6.114-.36 8.31.8a.65.65 0 1 1-.77.983M9.9 6.89c-2.4-1.487-6.518-1.848-8.6-.99a.78.78 0 0 1-.36-.777.78.78 0 0 1 .777-.73c2.38-.9 7.03.493 9.57 2.014a.78.78 0 1 1-.887 1.483"/>
-                     </svg>
-                 </a>
-                 <a href="https://podcasts.apple.com/sk/podcast/krvav%C3%BD-dob%C5%A1insk%C3%BD/id1608900257" target="_blank" rel="noopener noreferrer" class="text-light hover:text-primary transition-colors" aria-label="Odoberať na Apple Podcasts">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16" aria-hidden="true">
-                        <path d="M8.083 11.043c-1.26.01-2.41-.403-3.358-.963-.9-.533-1.68-1.317-2.314-2.288-.633-.97-.938-2.03-.91-3.068a5.15 5.15 0 0 1 .58-2.46c.51-.81 1.23-1.49 2.04-1.96.81-.47 1.7-.696 2.58-.676 1.01.02 1.95.41 2.75.963.79.55 1.43 1.31 1.89 2.18.46.88.7 1.87.68 2.86-.02 1.12-.43 2.18-1.12 3.06-.69.88-1.6 1.53-2.63 1.88-.18.06-.36.11-.54.15m2.63-6.623c.04-.68-.24-1.33-.67-1.88-.43-.55-.98-.9-1.6-.98-.61-.08-1.26.08-1.82.49-.56.4-.95.98-1.11 1.64-.16.66.04 1.34.49 1.88.45.54 1.08.88 1.78.91.13.01.26.01.39.01.55 0 1.1-.18 1.55-.54.45-.36.75-.85.86-1.41"/>
-                        <path d="M7.748 16c1.48 0 2.9-.5 4.03-1.49 1.13-.99 1.93-2.3 2.24-3.78-.03.01-2.13.74-3.95-.81-1.82-1.55-.98-4.34.6-5.8 1.57-1.47 3.85-1.7 5.32-.87a6.9 6.9 0 0 0-3.3-5.18c-1.4-.91-3-1.3-4.6-1.28-3.2.05-6.06 1.93-7.4 4.66-.2.4-.37.83-.5 1.28-.34 1.2-.33 2.47.04 3.68.37 1.21 1.02 2.3 1.9 3.17.88.87 1.95 1.5 3.13 1.82.61.16 1.24.24 1.87.24"/>
-                     </svg>
-                 </a>
-                 <a href="https://www.instagram.com/krvavydobsinsky/" target="_blank" rel="noopener noreferrer" class="text-light hover:text-primary transition-colors" aria-label="Sledovať na Instagrame">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16" aria-hidden="true">
-                        <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.917 3.917 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.703.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.297-.048c.852-.04 1.433-.174 1.942-.372.526-.205.972-.478 1.417-.923.445-.444.719-.89.923-1.417.198-.51.333-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.297c-.04-.852-.174-1.433-.372-1.942a3.916 3.916 0 0 0-.923-1.417A3.916 3.916 0 0 0 13.24.42c-.51-.198-1.09-.333-1.942-.372C10.445.01 10.173 0 8 0zm0 1.442c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.233s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.389.046-3.232c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.843-.038 1.096-.047 3.232-.047M8 4.938a3.062 3.062 0 1 0 0 6.125 3.062 3.062 0 0 0 0-6.125zm0 4.688a1.625 1.625 0 1 1 0-3.25 1.625 1.625 0 0 1 0 3.25zm4.938-5.617a.96.96 0 1 0 0-1.92.96.96 0 0 0 0 1.92z"/>
-                     </svg>
-                 </a>
-            </div>
-        </footer>
+            </footer>
         </div>
 
     <script>
@@ -654,8 +627,9 @@
         const subscribeView = document.getElementById('subscribe-view');
         const views = document.querySelectorAll('.view'); // Collection of all view divs
         const contactForm = document.getElementById('contact-form');
-        const formSuccessMessage = document.getElementById('form-success-message');
-        const formErrorMessage = document.getElementById('form-error-message');
+        // Removed references to form message elements as they are removed from HTML
+        // const formSuccessMessage = document.getElementById('form-success-message');
+        // const formErrorMessage = document.getElementById('form-error-message');
 
         // --- View Management ---
         /**
@@ -831,36 +805,7 @@
             playerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        /**
-         * Handles the submission of the contact form (simulated).
-         * @param {Event} event - The form submission event.
-         */
-        function handleContactFormSubmit(event) {
-            event.preventDefault(); // Prevent actual form submission
-            // Hide previous messages
-            formSuccessMessage.style.display = 'none';
-            formErrorMessage.style.display = 'none';
-
-            // Basic validation: check if story textarea is filled
-            const storyTextarea = document.getElementById('story');
-            const storyText = storyTextarea.value.trim();
-            if (!storyText) {
-                formErrorMessage.textContent = 'Chyba: Pole "Váš príbeh" je povinné.';
-                formErrorMessage.style.display = 'block';
-                storyTextarea.focus(); // Focus the required field
-                return; // Stop submission
-            }
-
-            // Log form data (simulation - replace with actual submission logic)
-            console.log("Form submitted (simulation):", Object.fromEntries(new FormData(contactForm)));
-
-            // Show success message
-            formSuccessMessage.style.display = 'block';
-            contactForm.reset(); // Clear the form
-
-            // Hide success message after a delay
-            setTimeout(() => { formSuccessMessage.style.display = 'none'; }, 5000);
-        }
+        // Removed handleContactFormSubmit function as Netlify will handle the form
 
         /**
          * Handles clicks on the "Show More" button to load more episodes.
@@ -1116,7 +1061,8 @@
             // Add event listeners
             allEpisodesGrid.addEventListener('click', handlePlayButtonClick); // Use event delegation for play buttons
             if (showMoreButton) showMoreButton.addEventListener('click', handleShowMoreClick);
-            if (contactForm) contactForm.addEventListener('submit', handleContactFormSubmit);
+            // Removed contact form listener as Netlify handles it now
+            // if (contactForm) contactForm.addEventListener('submit', handleContactFormSubmit);
 
             // Load initial data
             loadRssData();
