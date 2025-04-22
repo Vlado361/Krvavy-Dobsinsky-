@@ -37,9 +37,9 @@
 
         body { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
 
-        /* UPRAVENÉ: Zväčšenie maximálnej šírky kontajnera */
+        /* UPRAVENÉ: Vrátenie maximálnej šírky kontajnera na pôvodnú hodnotu */
         .container {
-            max-width: 1024px; /* Širší obsah (Tailwind max-w-5xl equivalent) */
+            max-width: 576px; /* Užší obsah (Tailwind max-w-xl equivalent) */
             margin-left: auto;
             margin-right: auto;
             flex-grow: 1; /* Aby container zabral dostupný priestor medzi headerom a footerom */
@@ -436,7 +436,7 @@
 
         // --- Pomocné funkcie ---
         /**
-         * Formátuje dátumový reťazec (napr. z RSS) do slovenského formátu 'DD. MMMM YYYY'.
+         * Formátuje dátumový reťazec (napr. z RSS) do slovenského formátu 'DD. MMMMsimpleTriplet'.
          * @param {string} dateString Dátumový reťazec na formátovanie.
          * @returns {string} Formátovaný dátum alebo pôvodný reťazec pri chybe.
          */
@@ -686,7 +686,7 @@
                         <h3 class="card-episode-title text-custom-gold mb-1">${title}</h3>
                         <p class="episode-date text-custom-date mb-2">${formatSlovakDate(pubDate)}</p>
                         <p class="card-episode-desc text-custom-dark leading-normal mb-3 flex-grow overflow-hidden">${extractAndShortenText(descriptionHtml, maxDescriptionLengthGrid)}</p>
-                        <button class="play-button mt-auto group" data-audio-src="${audioUrl}" data-title="${title.replace(/"/g, '&quot;')}" data-img-src="${imageUrl}" aria-label="Prehrať epizódu ${title.replace(/"/g, '&quot;')}">
+                        <button class="play-button mt-auto group" data-audio-src="${audioUrl}" data-title="${title.replace(/"/g, '"')}" data-img-src="${imageUrl}" aria-label="Prehrať epizódu ${title.replace(/"/g, '"')}">
                             <svg viewBox="0 0 24 24" width="1em" height="1em" class="fill-current transition-transform duration-300 group-hover:scale-110 mr-2" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
                             <span class="relative">Prehrať
                                 <span class="absolute left-0 -bottom-0.5 w-0 h-0.5 bg-custom-dark group-hover:w-full transition-all duration-300"></span>
@@ -879,7 +879,7 @@
                     card.innerHTML = `
                         <h3 class="card-text-title text-custom-gold mb-2">${text.title}</h3>
                         <p class="card-text-excerpt text-custom-dark leading-normal mb-3 flex-grow overflow-hidden">${extractAndShortenText(text.excerpt, maxExcerptLengthTexts)}</p>
-                        <button class="read-more-button mt-auto group" onclick="alert('Funkcia Čítať viac pre text \\'${text.title.replace(/'/g, "\\'")}\\' ešte nie je implementovaná.')" aria-label="Čítať viac o ${text.title.replace(/"/g, '&quot;')}">
+                        <button class="read-more-button mt-auto group" onclick="alert('Funkcia Čítať viac pre text \\'${text.title.replace(/'/g, "\\'")}\\' ešte nie je implementovaná.')" aria-label="Čítať viac o ${text.title.replace(/"/g, '"')}">
                             <span class="relative">Čítať viac<span class="absolute left-0 -bottom-0.5 w-0 h-0.5 bg-custom-dark group-hover:w-full transition-all duration-300"></span></span>
                         </button>`;
                     textsGrid.appendChild(card);
