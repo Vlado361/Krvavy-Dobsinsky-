@@ -192,12 +192,12 @@
 <body class="bg-custom-bg text-custom-dark">
 
     <div class="container mx-auto">
-        <header class="relative bg-gradient-to-b from-header-start to-header-end text-custom-header-text text-center py-16 min-h-[350px] flex flex-col justify-center items-center overflow-hidden rounded-t-lg">
-            <svg class="header-graphic header-star fill-white top-8 left-1/4 star-pulse-1" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
-            <svg class="header-graphic header-star fill-white top-16 right-1/4" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
-            <svg class="header-graphic header-star fill-white top-6 right-[15%] star-pulse-2" style="width: 7px; height: 7px; opacity: 0.5;" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
-            <svg class="header-graphic header-moon fill-white top-10 right-8" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" /></svg>
-            <svg class="header-graphic header-eye bottom-8 left-8" viewBox="0 0 50 25" xmlns="http://www.w3.org/2000/svg">
+        <header class="relative bg-gradient-to-b from-header-start to-header-end text-custom-header-text text-center py-16 min-h-[350px] flex flex-col justify-center items-center overflow-hidden">
+            <svg class="header-graphic header-star fill-white top-8 left-[35%] star-pulse-1" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
+            <svg class="header-graphic header-star fill-white top-16 right-[35%]" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
+            <svg class="header-graphic header-star fill-white top-6 right-[30%]" style="width: 7px; height: 7px; opacity: 0.5;" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
+            <svg class="header-graphic header-moon fill-white top-10 right-[25%]" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" /></svg>
+            <svg class="header-graphic header-eye bottom-8 left-[25%]" viewBox="0 0 50 25" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 0 12.5 C 5 0, 45 0, 50 12.5 C 45 25, 5 25, 0 12.5 Z" class="fill-header-start"/>
                 <ellipse cx="25" cy="12.5" rx="15" ry="10" class="fill-custom-gold"/>
                 <path d="M 25 5 L 25 20" stroke="black" stroke-width="3"/>
@@ -348,14 +348,13 @@
 
         </main>
 
-        <footer class="bg-custom-dark text-custom-header-text text-center py-4 h-[50px] flex items-center justify-center mt-auto rounded-b-lg">
+        <footer class="bg-custom-dark text-custom-header-text text-center py-4 h-[50px] flex items-center justify-center mt-auto">
             <p class="footer-text">© 2025 Krvavý Dobšinský. Všetky práva vyhradené.</p>
         </footer>
 
     </div> <script>
         // --- Configuration ---
         const rssFeedUrl = 'https://anchor.fm/s/8db2e1ec/podcast/rss'; // URL RSS feedu
-        // UPRAVENÉ: Nastavenie predvoleného obrázka na Imgur URL
         const defaultImageUrl = 'https://i.imgur.com/F9fKCIr.png'; // Predvolený obrázok
         const maxDescriptionLengthPlayer = 200; // Max dĺžka popisu v prehrávači
         const maxDescriptionLengthGrid = 80; // Max dĺžka popisu v mriežke
@@ -736,7 +735,7 @@
                             const pubDate = firstItem.querySelector("pubDate")?.textContent || "";
                             const descriptionHtml = firstItem.querySelector("content\\:encoded")?.textContent || firstItem.querySelector("description")?.textContent || "";
                             const audioUrl = firstItem.querySelector("enclosure")?.getAttribute("url") || "";
-                            // UPRAVENÉ: Použije obrázok z RSS alebo defaultImageUrl
+                            // Použije obrázok z RSS alebo defaultImageUrl
                             const imageUrl = firstItem.querySelector("itunes\\:image")?.getAttribute("href") || defaultImageUrl;
 
                             console.log("Player Image URL from RSS:", firstItem.querySelector("itunes\\:image")?.getAttribute("href")); // Log RSS URL
