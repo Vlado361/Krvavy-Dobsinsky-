@@ -27,7 +27,6 @@
         .fill-header-start { fill: #7A1B1A; }
         .fill-white { fill: #FFFFFF; }
 
-        /* Definícia premennej pre zlatú farbu pre jednoduchšie použitie */
         :root {
              --color-gold: #E4C266;
         }
@@ -36,36 +35,34 @@
         .to-header-end { --tw-gradient-to: #5A0000 var(--tw-gradient-to-position); }
 
         body { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
-        .container { max-width: 1024px; margin-left: auto; margin-right: auto; flex-grow: 1; display: flex; flex-direction: column; }
-        main { flex-grow: 1; }
+        .container {
+            max-width: 896px; /* Narrower content area (Tailwind max-w-4xl equivalent) */
+            margin-left: auto;
+            margin-right: auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+             flex-grow: 1;
+        }
 
-        /* Textové elementy & Hover efekty */
+        /* Removed comment block */
         .header-title { font-size: 2.25rem; font-weight: 700; transition: color 0.3s ease; cursor: default; position: relative; z-index: 2; }
         .header-subtitle { font-size: 1.125rem; position: relative; z-index: 2; }
 
-        /* Navigačný link - Hover efekt podčiarknutia */
         .nav-link {
             font-size: 0.875rem; cursor: pointer; padding: 0.25rem 0;
-            position: relative; /* Potrebné pre ::after */
-            text-decoration: none; /* Odstrániť predvolené podčiarknutie */
-            transition: color 0.3s ease; /* Existujúca transition pre farbu */
+            position: relative;
+            text-decoration: none;
+            transition: color 0.3s ease;
         }
         .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0; /* Začína s nulovou šírkou */
-            height: 1px; /* Hrúbka podčiarknutia */
-            bottom: -3px; /* Pozícia pod textom */
-            left: 50%; /* Štart v strede */
-            transform: translateX(-50%);
-            background-color: var(--color-gold); /* Farba podčiarknutia */
-            transition: width 0.3s ease-in-out; /* Animácia šírky */
+            content: ''; position: absolute; width: 0; height: 1px;
+            bottom: -3px; left: 50%; transform: translateX(-50%);
+            background-color: var(--color-gold); transition: width 0.3s ease-in-out;
         }
-        .nav-link:hover::after {
-            width: 100%; /* Rozšírenie na plnú šírku pri hover */
-        }
-        /* Farba textu pri hover zostáva z Tailwind triedy: hover:text-custom-gold */
-
+        .nav-link:hover::after { width: 100%; }
 
         .section-title { font-size: 1.5rem; font-weight: 700; transition: color 0.3s ease; cursor: pointer; }
         .section-title:hover { color: #E4C266; }
@@ -144,51 +141,22 @@
         .custom-audio::-moz-range-progress { background-color: #E4C266; height: 6px; border-radius: 4px; }
 
         /* Header Graphics Styles & Animations */
-        .header-graphic {
-            position: absolute;
-            z-index: 1;
-            pointer-events: none;
-            opacity: 0.7;
-            /* Base transition for hover out */
-            transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
-        }
+        .header-graphic { position: absolute; z-index: 1; pointer-events: none; opacity: 0.6; transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease; }
         .header-star { width: 10px; height: 10px; }
-        .header-moon { width: 40px; height: 40px; opacity: 0.6; animation: float 8s ease-in-out infinite; }
-        .header-eye { width: 35px; height: auto; opacity: 0.85; animation: breathe 6s ease-in-out infinite; transform-origin: center; }
+        .header-moon { width: 40px; height: 40px; opacity: 0.5; animation: float 8s ease-in-out infinite; }
+        .header-eye { width: 35px; height: auto; opacity: 0.75; animation: pulse-eye 4s ease-in-out infinite; transform-origin: center; }
         .star-pulse-1 { animation: pulse-opacity 5s ease-in-out infinite; }
         .star-pulse-2 { animation: pulse-opacity 7s ease-in-out infinite 1s; }
 
         /* Header Graphics Hover Effects (triggered by header hover) */
-        header:hover .header-star {
-             opacity: 0.9;
-             filter: drop-shadow(0 0 3px white);
-             /* Override pulse animation opacity during hover if needed, or let it continue */
-        }
-        header:hover .header-moon {
-             opacity: 0.85;
-             filter: drop-shadow(0 0 5px white);
-             animation-play-state: paused; /* Optional: pause float animation on hover */
-        }
-        header:hover .header-eye {
-             opacity: 1;
-             filter: drop-shadow(0 0 4px var(--color-gold));
-             animation-play-state: paused; /* Optional: pause breathe animation on hover */
-        }
-
+        header:hover .header-star { opacity: 1; filter: drop-shadow(0 0 5px white); }
+        header:hover .header-moon { opacity: 0.9; filter: drop-shadow(0 0 8px white); animation-play-state: paused; }
+        header:hover .header-eye { opacity: 1; filter: drop-shadow(0 0 6px var(--color-gold)); animation-play-state: paused; }
 
         /* Keyframes for Animations */
-        @keyframes pulse-opacity {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.8; }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
-        }
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-        }
+        @keyframes pulse-opacity { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.7; } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+        @keyframes pulse-eye { 0%, 100% { transform: scale(1); opacity: 0.75; } 50% { transform: scale(1.08); opacity: 0.95; } }
 
     </style>
 </head>
@@ -198,7 +166,7 @@
         <header class="relative bg-gradient-to-b from-header-start to-header-end text-custom-header-text text-center py-16 h-[300px] flex flex-col justify-center items-center overflow-hidden">
             <svg class="header-graphic header-star fill-white top-8 left-1/4 star-pulse-1" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
             <svg class="header-graphic header-star fill-white top-16 right-1/4" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
-            <svg class="header-graphic header-star fill-white top-6 right-[15%] star-pulse-2" style="width: 7px; height: 7px; opacity: 0.5;" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
+             <svg class="header-graphic header-star fill-white top-6 right-[15%] star-pulse-2" style="width: 7px; height: 7px; opacity: 0.5;" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
             <svg class="header-graphic header-moon fill-white top-10 right-8" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" /></svg>
             <svg class="header-graphic header-eye bottom-8 left-8" viewBox="0 0 50 25" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 0 12.5 C 5 0, 45 0, 50 12.5 C 45 25, 5 25, 0 12.5 Z" class="fill-header-start"/>
