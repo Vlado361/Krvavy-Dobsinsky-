@@ -37,9 +37,9 @@
 
         body { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
 
-        /* UPRAVENÉ: Zúženie maximálnej šírky kontajnera */
+        /* UPRAVENÉ: Zväčšenie maximálnej šírky kontajnera */
         .container {
-            max-width: 576px; /* Ešte užší obsah (Tailwind max-w-xl equivalent) */
+            max-width: 1024px; /* Širší obsah (Tailwind max-w-5xl equivalent) */
             margin-left: auto;
             margin-right: auto;
             flex-grow: 1; /* Aby container zabral dostupný priestor medzi headerom a footerom */
@@ -335,7 +335,7 @@
                 </div>
             </div>
 
-            <div id="texts-view" class="view">
+             <div id="texts-view" class="view">
                 <div class="relative pl-5 mb-5 h-[40px] flex items-center section-indicator">
                     <h2 class="section-title">Texty</h2>
                 </div>
@@ -353,19 +353,20 @@
         </footer>
 
     </div> <script>
-        // --- Configuration ---
+        // --- Konfigurácia ---
         const rssFeedUrl = 'https://anchor.fm/s/8db2e1ec/podcast/rss'; // URL RSS feedu
-        const defaultImageUrl = 'https://i.imgur.com/F9fKCIr.png'; // Predvolený obrázok
-        const maxDescriptionLengthPlayer = 200; // Max dĺžka popisu v prehrávači
-        const maxDescriptionLengthGrid = 80; // Max dĺžka popisu v mriežke
-        const maxExcerptLengthTexts = 120; // Max dĺžka úryvku v sekcii Texty
-        const episodesPerPage = 3; // Počet epizód na stránku (pre "Načítať ďalšie")
+        const defaultImageUrl = 'https://i.imgur.com/F9fKCIr.png'; // Predvolený obrázok, ak v RSS chýba
+        const maxDescriptionLengthPlayer = 200; // Maximálna dĺžka popisu v hlavnom prehrávači
+        const maxDescriptionLengthGrid = 80; // Maximálna dĺžka popisu v mriežke epizód
+        const maxExcerptLengthTexts = 120; // Maximálna dĺžka úryvku v sekcii Texty
+        const episodesPerPage = 3; // Počet epizód načítaných naraz tlačidlom "Načítať ďalšie"
 
-        // --- Global Variables ---
-        let allParsedEpisodes = []; // Pole pre všetky načítané epizódy z RSS
-        let displayedEpisodesCount = 0; // Počet aktuálne zobrazených epizód
+        // --- Globálne premenné ---
+        let allParsedEpisodes = []; // Pole pre všetky epizódy načítané z RSS
+        let displayedEpisodesCount = 0; // Počet aktuálne zobrazených epizód v mriežke
 
-        // --- DOM Element References ---
+        // --- Referencie na DOM elementy ---
+        // Získanie referencií na často používané elementy pre rýchlejší prístup
         const playerSection = document.getElementById('latest');
         const playerCard = document.getElementById('latest-episode-card');
         const playerImage = document.getElementById('latest-episode-image');
@@ -373,73 +374,78 @@
         const playerDate = document.getElementById('latest-episode-date');
         const playerDescription = document.getElementById('latest-episode-description');
         const playerAudio = document.getElementById('latest-episode-audio');
-        const rssError = document.getElementById('rss-error');
-        const allEpisodesGrid = document.getElementById('all-episodes-grid');
-        const allEpisodesError = document.getElementById('all-episodes-error');
-        const textsGrid = document.getElementById('texts-grid');
-        const textsError = document.getElementById('texts-error');
-        const homeView = document.getElementById('home-view');
-        const contactView = document.getElementById('contact-view');
-        const aboutView = document.getElementById('about-view');
-        const textsView = document.getElementById('texts-view');
-        const subscribeView = document.getElementById('subscribe-view');
-        const views = document.querySelectorAll('.view'); // Všetky sekcie/pohľady
-        const contactForm = document.getElementById('contact-form');
-        const formSuccessMessage = document.getElementById('form-success-message');
-        const formErrorMessage = document.getElementById('form-error-message');
-        const loadMoreContainer = document.getElementById('load-more-container');
-        const loadMoreButton = document.getElementById('load-more-episodes');
+        const rssError = document.getElementById('rss-error'); // Element pre zobrazenie chyby RSS
+        const allEpisodesGrid = document.getElementById('all-episodes-grid'); // Mriežka všetkých epizód
+        const allEpisodesError = document.getElementById('all-episodes-error'); // Element pre chybu načítania epizód
+        const textsGrid = document.getElementById('texts-grid'); // Mriežka pre texty
+        const textsError = document.getElementById('texts-error'); // Element pre chybu načítania textov
+        const homeView = document.getElementById('home-view'); // Pohľad: Domov
+        const contactView = document.getElementById('contact-view'); // Pohľad: Kontakt
+        const aboutView = document.getElementById('about-view'); // Pohľad: O podcaste
+        const textsView = document.getElementById('texts-view'); // Pohľad: Texty
+        const subscribeView = document.getElementById('subscribe-view'); // Pohľad: Odoberať
+        const views = document.querySelectorAll('.view'); // Všetky pohľady (sekcie)
+        const contactForm = document.getElementById('contact-form'); // Kontaktný formulár
+        const formSuccessMessage = document.getElementById('form-success-message'); // Správa o úspešnom odoslaní
+        const formErrorMessage = document.getElementById('form-error-message'); // Správa o chybe odoslania
+        const loadMoreContainer = document.getElementById('load-more-container'); // Kontajner tlačidla "Načítať ďalšie"
+        const loadMoreButton = document.getElementById('load-more-episodes'); // Tlačidlo "Načítať ďalšie"
 
 
-        // --- View Management ---
+        // --- Manažment pohľadov (Views) ---
         /**
          * Zobrazí špecifikovaný pohľad (sekciu) a skryje ostatné.
+         * Umožňuje aj plynulé posunutie na konkrétny element v rámci pohľadu.
          * @param {string} viewId ID pohľadu na zobrazenie (napr. 'home', 'about').
-         * @param {string|null} scrollToSelector CSS selektor elementu, ku ktorému sa má posunúť. Ak null, posunie sa na vrch.
+         * @param {string|null} [scrollToSelector=null] CSS selektor elementu, ku ktorému sa má posunúť. Ak null, posunie sa na vrch pohľadu.
          */
         function showView(viewId, scrollToSelector = null) {
             console.log(`Prepínam na pohľad: ${viewId}, cieľ posunu: ${scrollToSelector || 'žiadny'}`);
-            // Skryje všetky pohľady
+            // Skryje všetky pohľady odstránením triedy 'active'
             views.forEach(view => view.classList.remove('active'));
-            // Nájde a zobrazí aktívny pohľad
+
+            // Nájde a zobrazí požadovaný pohľad pridaním triedy 'active'
             const activeView = document.getElementById(`${viewId}-view`);
             if (activeView) {
                 activeView.classList.add('active');
-                // Posunutie (scroll) k cieľovému elementu alebo na vrch
+
+                // Posunutie (scroll) k cieľovému elementu alebo na vrch pohľadu
                 if (scrollToSelector) {
                     const elementToScroll = activeView.querySelector(scrollToSelector);
                     if (elementToScroll) {
-                        // Timeout zaručí, že scroll sa vykoná až po vykreslení
+                        // Timeout zabezpečí, že scroll sa vykoná až po vykreslení zmien DOM
                         setTimeout(() => {
                             elementToScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }, 0);
                     } else {
-                        console.warn(`Cieľ posunu '${scrollToSelector}' nebol nájdený v pohľade '${viewId}'. Posúvam na vrch.`);
-                        setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
+                        // Ak cieľový element neexistuje, posunie na vrch pohľadu
+                        console.warn(`Cieľ posunu '${scrollToSelector}' nebol nájdený v pohľade '${viewId}'. Posúvam na vrch pohľadu.`);
+                        setTimeout(() => activeView.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
                     }
                 } else {
-                    // Ak nie je špecifikovaný cieľ, posunie sa na vrch stránky
-                    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
+                    // Ak nie je špecifikovaný cieľ, posunie sa na vrch aktívneho pohľadu
+                    setTimeout(() => activeView.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
                 }
             } else {
-                // Fallback, ak sa pohľad nenájde
+                // Fallback: Ak sa pohľad nenájde, zobrazí domovskú stránku a vypíše chybu
                 console.error(`Pohľad '${viewId}-view' nebol nájdený. Zobrazujem domovskú stránku.`);
-                if (homeView) homeView.classList.add('active'); // Fallback na home view
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (homeView) homeView.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' }); // Posunie na vrch celej stránky
             }
         }
 
-        // --- Utility Functions ---
+        // --- Pomocné funkcie ---
         /**
-         * Formátuje dátumový reťazec do slovenského formátu.
-         * @param {string} dateString Dátumový reťazec (napr. z RSS).
+         * Formátuje dátumový reťazec (napr. z RSS) do slovenského formátu 'DD. MMMM YYYY'.
+         * @param {string} dateString Dátumový reťazec na formátovanie.
          * @returns {string} Formátovaný dátum alebo pôvodný reťazec pri chybe.
          */
         function formatSlovakDate(dateString) {
             try {
                 const date = new Date(dateString);
                 // Skontroluje, či je dátum platný
-                if (isNaN(date.getTime())) throw new Error("Invalid date");
+                if (isNaN(date.getTime())) throw new Error("Invalid date object");
+                // Vráti dátum vo formáte '1. januára 2023'
                 return date.toLocaleDateString('sk-SK', { year: 'numeric', month: 'long', day: 'numeric' });
             } catch (e) {
                 console.error("Chyba formátovania dátumu:", dateString, e);
@@ -448,113 +454,127 @@
         }
 
         /**
-         * Extrahuje čistý text z HTML reťazca a skráti ho na maximálnu dĺžku.
+         * Extrahuje čistý text z HTML reťazca, odstráni koncové URL a skráti ho na maximálnu dĺžku.
          * @param {string} htmlString HTML reťazec (napr. popis epizódy).
          * @param {number} [maxLength=100] Maximálna dĺžka výsledného textu.
-         * @returns {string} Skrátený čistý text.
+         * @returns {string} Skrátený čistý text s tromi bodkami na konci, ak bol skrátený.
          */
         function extractAndShortenText(htmlString, maxLength = 100) {
-            if (!htmlString) return ""; // Vráti prázdny reťazec, ak je vstup null alebo undefined
-            // Vytvorí dočasný div element na parsovanie HTML
+            if (!htmlString) return ""; // Ochrana pred null/undefined vstupom
+
+            // Vytvorí dočasný div element na parsovanie HTML a získanie textu
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = htmlString;
-            // Získa textový obsah, odstráni HTML tagy a biele znaky na začiatku/konci
             let text = (tempDiv.textContent || tempDiv.innerText || "").trim();
+
             // Odstráni prípadné URL na konci popisu (časté v Anchor.fm popisoch)
+            // Regulárny výraz hľadá http/https URL na konci reťazca
             text = text.replace(/https?:\/\/[^\s]+$/, '').trim();
-            // Skráti text, ak je dlhší ako povolené maximum
+
+            // Skráti text, ak je dlhší ako povolené maximum, a pridá "..."
             return text.length > maxLength ? text.substring(0, maxLength).trim() + '...' : text;
         }
 
-        // --- Event Handlers ---
+        // --- Obsluha udalostí (Event Handlers) ---
         /**
          * Spracuje kliknutie na tlačidlo "Prehrať" v mriežke epizód.
-         * Aktualizuje hlavný prehrávač údajmi z kliknutej epizódy.
+         * Aktualizuje hlavný prehrávač údajmi z kliknutej epizódy a posunie naň zobrazenie.
          * @param {Event} event Udalosť kliknutia.
          */
         function handlePlayButtonClick(event) {
-            // Nájde najbližšie tlačidlo s triedou .play-button
+            // Nájde najbližší rodičovský element s triedou .play-button
             const button = event.target.closest('.play-button');
             if (!button) return; // Ak sa nekliklo na tlačidlo alebo jeho potomka, nerobí nič
 
-            // Získa dáta epizódy z data atribútov tlačidla
+            // Získa dáta epizódy uložené v data-* atribútoch tlačidla
             const audioSrc = button.dataset.audioSrc;
             const title = button.dataset.title;
             const imgSrc = button.dataset.imgSrc || defaultImageUrl; // Použije predvolený obrázok, ak nie je špecifikovaný
 
             if (!audioSrc) {
-                console.error("Chýba zdroj audia pre tlačidlo.");
-                return;
+                console.error("Chýba atribút data-audio-src pre tlačidlo.");
+                return; // Nemá čo prehrať
             }
 
-            console.log(`Prehrávam: ${title}`);
+            console.log(`Prehrávam epizódu: ${title}`);
 
-            // Aktualizuje obsah hlavného prehrávača (ak existuje)
+            // Aktualizuje obsah hlavného prehrávača (len ak elementy existujú)
             if (playerTitle) playerTitle.textContent = title || "Neznáma epizóda";
-            const articleElement = button.closest('article');
-            if (playerDate) playerDate.textContent = articleElement?.querySelector('.episode-date')?.textContent || '';
-            if (playerDescription) playerDescription.textContent = extractAndShortenText(articleElement?.dataset.fullDesc || '', maxDescriptionLengthPlayer) || "Popis nie je k dispozícii.";
+            const articleElement = button.closest('article'); // Nájde rodičovský article element
+            // Získa dátum a plný popis z article elementu (ak existujú)
+            const dateText = articleElement?.querySelector('.episode-date')?.textContent || '';
+            const fullDesc = articleElement?.dataset.fullDesc || ''; // Získa plný popis z data atribútu
+            if (playerDate) playerDate.textContent = dateText;
+            if (playerDescription) playerDescription.textContent = extractAndShortenText(fullDesc, maxDescriptionLengthPlayer) || "Popis nie je k dispozícii.";
+
+            // Aktualizácia obrázka v prehrávači s ošetrením chyby
             if (playerImage) {
-                 // Clear previous onerror before setting src
-                 playerImage.onerror = null;
-                 // Set the src
-                 playerImage.src = imgSrc;
-                 // Attach the onerror handler *after* setting src
-                 playerImage.onerror = () => {
-                     console.error(`Error loading player image from grid: ${imgSrc}. Falling back to default.`); // Log error
-                     playerImage.src = defaultImageUrl;
-                     playerImage.onerror = null; // Prevent infinite loops if default image also fails
-                 };
+                playerImage.onerror = null; // Odstráni predchádzajúci onerror handler
+                playerImage.src = imgSrc; // Nastaví nový zdroj obrázka
+                // Pridá nový onerror handler *po* nastavení src
+                playerImage.onerror = () => {
+                    console.error(`Chyba načítania obrázka prehrávača z mriežky: ${imgSrc}. Používam predvolený.`);
+                    playerImage.src = defaultImageUrl;
+                    playerImage.onerror = null; // Zabráni nekonečnej slučke, ak aj predvolený obrázok zlyhá
+                };
             }
 
-            // Načíta a spustí audio (ak existuje)
+            // Načíta a spustí audio v hlavnom prehrávači (len ak existuje)
             if (playerAudio) {
+                // Ak sa zdroj audia zmenil, načíta ho a spustí
                 if (playerAudio.src !== audioSrc) {
                     playerAudio.src = audioSrc;
-                    playerAudio.load(); // Načíta nový zdroj
-                    playerAudio.play().catch(e => console.error("Chyba prehrávania audia:", e)); // Spustí prehrávanie
+                    playerAudio.load(); // Explicitne načíta nový zdroj
+                    playerAudio.play().catch(e => console.error("Chyba automatického prehrávania audia:", e));
                 } else if (playerAudio.paused) {
-                    playerAudio.play().catch(e => console.error("Chyba prehrávania audia:", e)); // Pokračuje v prehrávaní
+                    // Ak je zdroj rovnaký, ale audio je pozastavené, iba ho spustí
+                    playerAudio.play().catch(e => console.error("Chyba prehrávania audia:", e));
                 }
+                // Ak audio už beží a zdroj je rovnaký, nerobí nič
             }
 
-            // Zobrazí obsah prehrávača (ak existuje)
+            // Zobrazí obsah prehrávača (odstráni placeholder)
             if (playerCard) playerCard.classList.add('loaded');
-            // Posunie zobrazenie na sekciu prehrávača (ak existuje)
+
+            // Posunie zobrazenie plynulo na sekciu prehrávača
             if (playerSection) playerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         /**
-         * Spracuje odoslanie kontaktného formulára pre Netlify.
+         * Spracuje odoslanie kontaktného formulára pre Netlify Forms.
+         * Zahŕňa validáciu, vizuálnu spätnú väzbu a odoslanie dát.
          * @param {Event} event Udalosť odoslania formulára.
          */
         function handleContactFormSubmit(event) {
-            event.preventDefault(); // Zabraňuje predvolenému odoslaniu formulára
-            // Skryje predchádzajúce správy (ak existujú)
+            event.preventDefault(); // Zabraňuje predvolenému odoslaniu (ktoré by obnovilo stránku)
+
+            // Skryje predchádzajúce správy o úspechu/chybe
             if (formSuccessMessage) formSuccessMessage.style.display = 'none';
             if (formErrorMessage) formErrorMessage.style.display = 'none';
 
-            // Validácia: Skontroluje, či je vyplnené pole "Váš príbeh"
+            // --- Validácia ---
             const storyTextarea = document.getElementById('story');
             const storyText = storyTextarea ? storyTextarea.value.trim() : null;
             if (!storyText) {
+                // Ak je pole "Váš príbeh" prázdne, zobrazí chybu a zameria sa na pole
                 if (formErrorMessage) {
                     formErrorMessage.textContent = 'Chyba: Pole "Váš príbeh" je povinné.';
                     formErrorMessage.style.display = 'block';
                 }
-                if (storyTextarea) storyTextarea.focus(); // Zameria sa na povinné pole
-                return; // Ukončí funkciu
+                if (storyTextarea) storyTextarea.focus();
+                return; // Ukončí funkciu, neodosiela formulár
             }
 
-            // Vizuálna spätná väzba počas odosielania
+            // --- Vizuálna spätná väzba počas odosielania ---
             const submitButton = contactForm ? contactForm.querySelector('button[type="submit"]') : null;
             if (submitButton) {
-                submitButton.classList.add('pulse-animation'); // Pridá animáciu
+                submitButton.classList.add('pulse-animation'); // Pridá animáciu pulzovania
                 submitButton.textContent = 'Odosielam...'; // Zmení text tlačidla
-                submitButton.disabled = true; // Deaktivuje tlačidlo
+                submitButton.disabled = true; // Deaktivuje tlačidlo, aby sa zabránilo viacnásobnému odoslaniu
             }
 
-            // Simulácia odoslania pre lokálny vývoj (localhost alebo 127.0.0.1)
+            // --- Simulácia pre lokálny vývoj ---
+            // Ak stránka beží na localhost alebo 127.0.0.1, simuluje úspešné odoslanie
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 setTimeout(() => {
                     console.log("Formulár odoslaný (simulácia):", contactForm ? Object.fromEntries(new FormData(contactForm)) : 'Formulár nenájdený');
@@ -562,7 +582,7 @@
                         formSuccessMessage.textContent = 'Ďakujem! Váš príbeh bol úspešne odoslaný (simulácia).';
                         formSuccessMessage.style.display = 'block';
                     }
-                    if (contactForm) contactForm.reset(); // Vyčistí formulár
+                    if (contactForm) contactForm.reset(); // Vyčistí formulár po "odoslaní"
                     if (submitButton) { // Obnoví stav tlačidla
                         submitButton.classList.remove('pulse-animation');
                         submitButton.textContent = 'Odoslať príbeh';
@@ -574,48 +594,48 @@
                 return; // Ukončí funkciu pre lokálny vývoj
             }
 
-            // Skutočné odoslanie formulára na Netlify pomocou Fetch API
+            // --- Skutočné odoslanie formulára na Netlify ---
             if (!contactForm) {
-                 console.error("Kontaktný formulár nebol nájdený.");
-                 if (submitButton) { // Obnoví stav tlačidla aj pri chybe
+                 console.error("Kontaktný formulár nebol nájdený v DOM.");
+                 if (submitButton) { // Obnoví tlačidlo aj pri tejto chybe
                      submitButton.classList.remove('pulse-animation');
                      submitButton.textContent = 'Odoslať príbeh';
                      submitButton.disabled = false;
                  }
                  return;
-            }
+             }
 
-            fetch('/', {
+            fetch('/', { // Odosiela na koreňovú adresu, Netlify to spracuje podľa atribútu data-netlify
                 method: 'POST',
-                headers: { "Content-Type": "application/x-www-form-urlencoded" }, // Potrebný header pre Netlify
-                body: new URLSearchParams(new FormData(contactForm)).toString() // Konvertuje dáta formulára na správny formát
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }, // Potrebný header pre Netlify Forms
+                body: new URLSearchParams(new FormData(contactForm)).toString() // Konvertuje dáta formulára do správneho formátu
             })
             .then(response => {
-                if (response.ok) { // Ak Netlify odpovie úspešne (stav 2xx)
+                if (response.ok) { // Ak Netlify odpovie úspešne (HTTP status 2xx)
                     if (formSuccessMessage) {
                         formSuccessMessage.textContent = 'Ďakujem! Váš príbeh bol úspešne odoslaný.';
                         formSuccessMessage.style.display = 'block';
                     }
                     if (contactForm) contactForm.reset(); // Vyčistí formulár
-                } else { // Ak nastala chyba na strane servera
+                } else { // Ak nastala chyba na strane servera (Netlify)
                     response.text().then(text => { // Pokúsi sa získať text chyby z odpovede
                         if (formErrorMessage) {
-                            formErrorMessage.textContent = `Chyba pri odosielaní: ${text || response.statusText}`;
+                            formErrorMessage.textContent = `Chyba pri odosielaní (${response.status}): ${text || response.statusText}`;
                             formErrorMessage.style.display = 'block';
                         }
                     });
-                    throw new Error('Nastala chyba pri odosielaní formulára'); // Vyvolá chybu pre .catch blok
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`); // Vyvolá chybu pre .catch blok
                 }
             })
-            .catch(error => { // Spracovanie chýb (sieťové problémy, chyby servera)
+            .catch(error => { // Spracovanie chýb (sieťové problémy, chyby servera z throw vyššie)
                 console.error("Chyba odosielania formulára:", error);
-                // Zobrazí chybovú správu, len ak už nie je zobrazená iná
+                // Zobrazí všeobecnú chybovú správu, len ak už nie je zobrazená špecifickejšia chyba zo servera
                 if (formErrorMessage && formErrorMessage.style.display === 'none') {
-                    formErrorMessage.textContent = `Chyba: ${error.message}. Skúste to prosím znova.`;
+                    formErrorMessage.textContent = `Chyba: ${error.message}. Skúste to prosím znova neskôr.`;
                     formErrorMessage.style.display = 'block';
                 }
             })
-            .finally(() => { // Tento blok sa vykoná vždy (po úspechu aj chybe)
+            .finally(() => { // Tento blok sa vykoná vždy (po úspechu aj po chybe)
                  if (submitButton) { // Obnoví stav tlačidla
                      submitButton.classList.remove('pulse-animation');
                      submitButton.textContent = 'Odoslať príbeh';
@@ -628,49 +648,52 @@
 
         // --- Paginácia Epizód ---
         /**
-         * Načíta a zobrazí ďalšiu dávku epizód do mriežky.
+         * Načíta a zobrazí ďalšiu dávku (stránku) epizód do mriežky.
+         * Aktualizuje stav tlačidla "Načítať ďalšie".
          */
         function loadMoreEpisodes() {
-            // Kontrola, či existuje mriežka
             if (!allEpisodesGrid) {
-                 console.warn("Mriežka epizód (#all-episodes-grid) nebola nájdená, nemôžem načítať ďalšie.");
-                 return;
+                console.warn("Mriežka epizód (#all-episodes-grid) nebola nájdená.");
+                return;
             }
 
-            const startIndex = displayedEpisodesCount; // Začína od posledne zobrazeného indexu
-            // Končí na konci poľa alebo po pridaní `episodesPerPage` epizód
+            const startIndex = displayedEpisodesCount; // Index prvej novej epizódy
+            // Index poslednej novej epizódy (alebo koniec poľa)
             const endIndex = Math.min(startIndex + episodesPerPage, allParsedEpisodes.length);
 
-            console.log(`Načítavam epizódy od ${startIndex} do ${endIndex - 1}`);
+            console.log(`Načítavam epizódy od indexu ${startIndex} do ${endIndex - 1}`);
 
-            // Prejde cez dávku epizód na zobrazenie
+            // Prejde cez dávku epizód určenú na zobrazenie
             for (let i = startIndex; i < endIndex; i++) {
-                const item = allParsedEpisodes[i]; // Aktuálny XML element epizódy
+                const item = allParsedEpisodes[i]; // Aktuálny XML <item> element
                 try {
-                    // Získa dáta z XML elementu
+                    // Získa dáta z XML elementu epizódy
                     const title = item.querySelector("title")?.textContent || `Epizóda ${i + 1}`;
                     const pubDate = item.querySelector("pubDate")?.textContent || "";
-                    // Preferuje content:encoded, fallback na description
+                    // Preferuje plný popis z content:encoded, fallback na description
                     const descriptionHtml = item.querySelector("content\\:encoded")?.textContent || item.querySelector("description")?.textContent || "";
                     const audioUrl = item.querySelector("enclosure")?.getAttribute("url") || "";
+                    // Preferuje itunes:image, fallback na predvolený obrázok
                     const imageUrl = item.querySelector("itunes\\:image")?.getAttribute("href") || defaultImageUrl;
 
                     // Vytvorí HTML element pre kartu epizódy
                     const card = document.createElement('article');
-                    card.dataset.fullDesc = descriptionHtml; // Uloží plný popis pre prehrávač
+                    card.dataset.fullDesc = descriptionHtml; // Uloží plný popis pre potreby hlavného prehrávača
                     card.className = 'bg-custom-card rounded-lg p-5 flex flex-col h-[220px] card-hover-effect border border-transparent hover:border-custom-gold transition-all'; // Styling karty
-                    // Vloží vnútorné HTML karty
+
+                    // Vloží vnútorné HTML karty pomocou template literálu
                     card.innerHTML = `
                         <h3 class="card-episode-title text-custom-gold mb-1">${title}</h3>
                         <p class="episode-date text-custom-date mb-2">${formatSlovakDate(pubDate)}</p>
                         <p class="card-episode-desc text-custom-dark leading-normal mb-3 flex-grow overflow-hidden">${extractAndShortenText(descriptionHtml, maxDescriptionLengthGrid)}</p>
-                        <button class="play-button mt-auto group" data-audio-src="${audioUrl}" data-title="${title.replace(/"/g, '"')}" data-img-src="${imageUrl}" aria-label="Prehrať epizódu ${title.replace(/"/g, '"')}">
+                        <button class="play-button mt-auto group" data-audio-src="${audioUrl}" data-title="${title.replace(/"/g, '&quot;')}" data-img-src="${imageUrl}" aria-label="Prehrať epizódu ${title.replace(/"/g, '&quot;')}">
                             <svg viewBox="0 0 24 24" width="1em" height="1em" class="fill-current transition-transform duration-300 group-hover:scale-110 mr-2" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
                             <span class="relative">Prehrať
                                 <span class="absolute left-0 -bottom-0.5 w-0 h-0.5 bg-custom-dark group-hover:w-full transition-all duration-300"></span>
                             </span>
                         </button>`;
-                    // Pridá kartu do mriežky
+
+                    // Pridá vytvorenú kartu do mriežky
                     allEpisodesGrid.appendChild(card);
                 } catch (e) {
                     console.error(`Chyba spracovania epizódy #${i + 1} pre mriežku:`, e);
@@ -686,6 +709,7 @@
                 if (displayedEpisodesCount >= allParsedEpisodes.length) {
                     // Ak sú zobrazené všetky epizódy, skryje tlačidlo
                     loadMoreContainer.style.display = 'none';
+                    console.log("Všetky epizódy boli načítané.");
                 } else {
                     // Inak zobrazí tlačidlo
                     loadMoreContainer.style.display = 'block';
@@ -694,145 +718,149 @@
         }
 
 
-        // --- Data Loading ---
+        // --- Načítanie dát ---
         /**
-         * Načíta a spracuje dáta z RSS feedu.
+         * Načíta a spracuje dáta z RSS feedu podcastu.
+         * Aktualizuje hlavný prehrávač a načíta prvú dávku epizód do mriežky.
          */
         function loadRssData() {
-            console.log("Načítavam RSS feed...");
+            console.log("Spúšťam načítanie RSS feedu...");
             // Resetuje stav pred načítaním
             allParsedEpisodes = [];
             displayedEpisodesCount = 0;
-            // Zobrazí placeholder len ak element existuje
+            // Zobrazí placeholder v mriežke (ak existuje) a skryje tlačidlo "Načítať ďalšie"
             if (allEpisodesGrid) {
                  allEpisodesGrid.innerHTML = '<div class="loading-placeholder col-span-full h-24">Načítavam epizódy...</div>';
             }
-            if(loadMoreContainer) loadMoreContainer.style.display = 'none'; // Skryje tlačidlo "Načítať ďalšie"
+            if(loadMoreContainer) loadMoreContainer.style.display = 'none';
+            // Skryje prípadné predchádzajúce chybové správy
+            if(rssError) rssError.style.display = 'none';
+            if(allEpisodesError) allEpisodesError.style.display = 'none';
 
-            // Načíta RSS feed
+            // Načíta RSS feed pomocou Fetch API
             fetch(rssFeedUrl)
                 .then(response => {
-                    // Skontroluje, či bola odpoveď úspešná
-                    if (!response.ok) throw new Error(`Sieťová chyba: ${response.statusText}`);
-                    return response.text(); // Prečíta odpoveď ako text
+                    // Skontroluje, či bola odpoveď servera úspešná (status 2xx)
+                    if (!response.ok) throw new Error(`Sieťová odpoveď nebola OK: ${response.status} ${response.statusText}`);
+                    return response.text(); // Prečíta odpoveď ako text (XML)
                 })
-                .then(str => new window.DOMParser().parseFromString(str, "text/xml")) // Paruje XML text
+                .then(str => new window.DOMParser().parseFromString(str, "text/xml")) // Paruje XML text na DOM objekt
                 .then(data => {
-                    console.log("RSS Feed úspešne spracovaný.");
+                    console.log("RSS Feed úspešne načítaný a spracovaný.");
                     const items = data.querySelectorAll("item"); // Nájde všetky elementy <item> (epizódy)
-                    if (!items || items.length === 0) throw new Error("V RSS feede neboli nájdené žiadne epizódy.");
+                    if (!items || items.length === 0) throw new Error("V RSS feede neboli nájdené žiadne položky <item>.");
 
-                    // Uloží všetky nájdené epizódy do globálnej premennej
-                    allParsedEpisodes = Array.from(items);
+                    // Uloží všetky nájdené epizódy (ako NodeList) do globálnej premennej
+                    allParsedEpisodes = Array.from(items); // Konvertuje NodeList na pole pre jednoduchšiu prácu
+                    console.log(`Nájdených ${allParsedEpisodes.length} epizód.`);
 
                     // ---- Spracovanie najnovšej epizódy pre prehrávač ----
-                    // Kontrola, či existujú elementy prehrávača pred ich aktualizáciou
+                    // Kontrola, či existujú všetky potrebné elementy prehrávača
                     if (playerCard && playerTitle && playerDate && playerDescription && playerImage && playerAudio) {
-                        const firstItem = allParsedEpisodes[0]; // Prvá epizóda je najnovšia
+                        const firstItem = allParsedEpisodes[0]; // Prvá epizóda v RSS je zvyčajne najnovšia
                         try {
-                            // Získa dáta pre prehrávač
+                            // Získa dáta pre prehrávač z prvého <item>
                             const title = firstItem.querySelector("title")?.textContent || "Neznámy názov";
                             const pubDate = firstItem.querySelector("pubDate")?.textContent || "";
                             const descriptionHtml = firstItem.querySelector("content\\:encoded")?.textContent || firstItem.querySelector("description")?.textContent || "";
                             const audioUrl = firstItem.querySelector("enclosure")?.getAttribute("url") || "";
-                            // Použije obrázok z RSS alebo defaultImageUrl
                             const imageUrl = firstItem.querySelector("itunes\\:image")?.getAttribute("href") || defaultImageUrl;
 
-                            console.log("Player Image URL from RSS:", firstItem.querySelector("itunes\\:image")?.getAttribute("href")); // Log RSS URL
-                            console.log("Final Player Image URL being set:", imageUrl); // Log final URL
+                            console.log("URL obrázka pre prehrávač z RSS:", firstItem.querySelector("itunes\\:image")?.getAttribute("href"));
+                            console.log("Finálna URL obrázka pre prehrávač:", imageUrl);
 
                             // Aktualizuje DOM elementy prehrávača
                             playerTitle.textContent = title;
                             playerDate.textContent = formatSlovakDate(pubDate);
                             playerDescription.textContent = extractAndShortenText(descriptionHtml, maxDescriptionLengthPlayer);
 
-                            // Clear previous onerror before setting src
-                            playerImage.onerror = null;
-                            // Set the src
-                            playerImage.src = imageUrl;
-                            // Attach the onerror handler *after* setting src
-                            playerImage.onerror = () => {
-                                console.error(`Error loading player image: ${imageUrl}. Falling back to default: ${defaultImageUrl}`); // Log error
+                            // Nastavenie obrázka prehrávača s ošetrením chyby
+                            playerImage.onerror = null; // Odstráni predchádzajúci handler
+                            playerImage.src = imageUrl; // Nastaví nový zdroj
+                            playerImage.onerror = () => { // Pridá nový handler
+                                console.error(`Chyba načítania hlavného obrázka prehrávača: ${imageUrl}. Používam predvolený: ${defaultImageUrl}`);
                                 playerImage.src = defaultImageUrl;
-                                playerImage.onerror = null; // Prevent infinite loops if default image also fails
+                                playerImage.onerror = null; // Zabráni nekonečnej slučke
                             };
 
-                            playerAudio.src = audioUrl;
-                            playerCard.classList.add('loaded'); // Odstráni placeholder prehrávača
-                            console.log("Player card marked as loaded."); // Log loaded status
+                            playerAudio.src = audioUrl; // Nastaví zdroj audia
+                            playerCard.classList.add('loaded'); // Odstráni placeholder a zobrazí obsah prehrávača
+                            console.log("Karta prehrávača označená ako načítaná.");
 
                         } catch (e) {
-                           // Spracovanie chyby pri načítaní najnovšej epizódy
-                           console.error("Chyba spracovania najnovšej epizódy:", e);
-                            if (rssError) {
-                                rssError.textContent = 'Chyba pri spracovaní najnovšej epizódy.';
-                                rssError.style.display = 'block';
-                            }
-                            // Zobrazí chybový stav v prehrávači
-                            playerCard.classList.add('loaded');
-                            playerTitle.textContent = 'Chyba';
-                            playerDate.textContent = '-';
-                            playerDescription.textContent = 'Nepodarilo sa načítať.';
-                            playerImage.src = defaultImageUrl; // Ensure default image is set on error
-                            playerImage.style.display = 'block'; // Zobrazí defaultný obrázok aj pri chybe
-                            playerAudio.style.display = 'none'; // Skryje nefunkčný prehrávač
+                           // Spracovanie chyby pri načítaní dát *pre najnovšiu epizódu*
+                           console.error("Chyba spracovania dát najnovšej epizódy pre prehrávač:", e);
+                           if (rssError) {
+                               rssError.textContent = 'Chyba: Nepodarilo sa spracovať dáta najnovšej epizódy.';
+                               rssError.style.display = 'block';
+                           }
+                           // Zobrazí chybový stav v prehrávači
+                           playerCard.classList.add('loaded'); // Aj pri chybe odstráni loading placeholder
+                           playerTitle.textContent = 'Chyba načítania';
+                           playerDate.textContent = '-';
+                           playerDescription.textContent = 'Nepodarilo sa načítať detaily epizódy.';
+                           playerImage.src = defaultImageUrl; // Zobrazí predvolený obrázok
+                           playerImage.style.display = 'block'; // Uistí sa, že obrázok je viditeľný
+                           playerAudio.style.display = 'none'; // Skryje nefunkčný audio element
                         }
                     } else {
-                        console.warn("Elementy prehrávača neboli nájdené, preskakujem aktualizáciu.");
+                        console.warn("Niektoré elementy prehrávača neboli nájdené v DOM, preskakujem aktualizáciu prehrávača.");
                     }
-
 
                     // ---- Načítanie prvej dávky epizód do mriežky ----
-                    // Kontrola, či existuje mriežka pred načítaním epizód
                     if (allEpisodesGrid) {
-                        allEpisodesGrid.innerHTML = ''; // Vymaže placeholder z mriežky
+                        allEpisodesGrid.innerHTML = ''; // Vymaže placeholder z mriežky ("Načítavam epizódy...")
                         loadMoreEpisodes(); // Zavolá funkciu na načítanie prvej stránky epizód
                     } else {
-                         console.warn("Mriežka epizód (#all-episodes-grid) nebola nájdená, preskakujem načítanie epizód.");
+                         console.warn("Mriežka epizód (#all-episodes-grid) nebola nájdená, preskakujem načítanie epizód do mriežky.");
                     }
-
 
                 })
                 .catch(error => {
-                    // Spracovanie chýb pri načítaní alebo parsovaní RSS
-                    console.error("Nepodarilo sa načítať RSS feed:", error);
+                    // Spracovanie chýb pri načítaní alebo parsovaní celého RSS feedu
+                    console.error("Nepodarilo sa načítať alebo spracovať RSS feed:", error);
+                    // Zobrazí chybové správy v príslušných sekciách (ak elementy existujú)
                     if (rssError) {
-                        rssError.textContent = `Chyba načítania podcastu: ${error.message}.`;
+                        rssError.textContent = `Chyba načítania podcastu: ${error.message}. Skúste obnoviť stránku.`;
                         rssError.style.display = 'block';
                     }
                      if (allEpisodesError) {
-                        allEpisodesError.textContent = `Chyba načítania epizód: ${error.message}.`;
-                        allEpisodesError.style.display = 'block';
+                         allEpisodesError.textContent = `Chyba načítania epizód: ${error.message}.`;
+                         allEpisodesError.style.display = 'block';
                      }
-                    // Zobrazí chybový stav v prehrávači aj v mriežke (ak existujú)
+                    // Zobrazí chybový stav v prehrávači (ak existuje)
                     if (playerCard && playerTitle && playerDate && playerDescription && playerImage && playerAudio) {
-                        playerCard.classList.add('loaded');
-                        playerTitle.textContent = 'Chyba'; playerDate.textContent = '-'; playerDescription.textContent = 'Nepodarilo sa načítať.'; playerImage.src = defaultImageUrl; playerImage.style.display = 'block'; playerAudio.style.display = 'none';
+                        playerCard.classList.add('loaded'); // Odstráni loading
+                        playerTitle.textContent = 'Chyba'; playerDate.textContent = '-'; playerDescription.textContent = 'Nepodarilo sa načítať podcast.'; playerImage.src = defaultImageUrl; playerImage.style.display = 'block'; playerAudio.style.display = 'none';
                     }
+                    // Zobrazí chybu v mriežke epizód (ak existuje)
                     if (allEpisodesGrid) {
-                        allEpisodesGrid.innerHTML = `<p class="col-span-full text-center text-red-700 p-4">${allEpisodesError?.textContent || error.message}</p>`;
+                        allEpisodesGrid.innerHTML = `<p class="col-span-full text-center text-red-700 p-4">Nepodarilo sa načítať epizódy. ${error.message}</p>`;
                     }
                     if(loadMoreContainer) loadMoreContainer.style.display = 'none'; // Skryje tlačidlo "Načítať ďalšie"
                 });
         }
 
         /**
-         * Načíta dáta pre sekciu Texty (momentálne používa placeholder dáta).
+         * Načíta dáta pre sekciu Texty.
+         * Momentálne používa len statické placeholder dáta.
+         * V budúcnosti by sa mohlo nahradiť načítaním z API alebo iného zdroja.
          */
         function loadTextsData() {
-            // Kontrola, či existuje mriežka pre texty
             if (!textsGrid) {
-                 console.warn("Mriežka textov (#texts-grid) nebola nájdená, preskakujem načítanie textov.");
-                 return;
+                console.warn("Mriežka textov (#texts-grid) nebola nájdená, preskakujem načítanie textov.");
+                return;
             }
-            console.log("Načítavam dáta pre sekciu Texty (placeholder)...");
-            textsGrid.innerHTML = ''; // Vymaže obsah mriežky (vrátane placeholderu)
+            console.log("Načítavam dáta pre sekciu Texty (používam placeholder)...");
+            textsGrid.innerHTML = ''; // Vymaže obsah mriežky (vrátane placeholderu "Načítavam texty...")
+            if(textsError) textsError.style.display = 'none'; // Skryje prípadnú predchádzajúcu chybu
 
-            // Placeholder dáta pre texty (nahraďte skutočným načítaním, ak je potrebné)
+            // --- Placeholder dáta ---
+            // V reálnej aplikácii by tieto dáta prišli z API alebo CMS
             const placeholderTexts = [
-                { title: "Prepis: Zmiznutie v lese", excerpt: "Hlboko v hore sa stratil mladý muž. Nikdy ho nenašli, no miestni hovoria o šepotoch medzi stromami a svetlách, ktoré tam nemajú čo robiť...", link: "#" },
-                { title: "Bonus: Pôvod legendy o poludnici", excerpt: "Poludnica, bytosť trestajúca tých, čo nedodržiavajú poludňajší pokoj. Aké sú korene tejto strašidelnej postavy slovanského folklóru?", link: "#" },
-                { title: "Prepis: Dom na konci ulice", excerpt: "Opustený dom, ktorý láka deti svojimi tajomstvami. Ale čo ak dom nechce, aby odišli? Príbeh inšpirovaný skutočnými udalosťami.", link: "#" }
+                { id: "text1", title: "Prepis: Zmiznutie v lese", excerpt: "Hlboko v hore sa stratil mladý muž. Nikdy ho nenašli, no miestni hovoria o šepotoch medzi stromami a svetlách, ktoré tam nemajú čo robiť...", link: "#" },
+                { id: "text2", title: "Bonus: Pôvod legendy o poludnici", excerpt: "Poludnica, bytosť trestajúca tých, čo nedodržiavajú poludňajší pokoj. Aké sú korene tejto strašidelnej postavy slovanského folklóru?", link: "#" },
+                { id: "text3", title: "Prepis: Dom na konci ulice", excerpt: "Opustený dom, ktorý láka deti svojimi tajomstvami. Ale čo ak dom nechce, aby odišli? Príbeh inšpirovaný skutočnými udalosťami.", link: "#" }
             ];
 
             // Ak nie sú žiadne texty (ani placeholder), zobrazí správu
@@ -846,47 +874,70 @@
                 try {
                     const card = document.createElement('article');
                     card.className = 'bg-custom-card rounded-lg p-5 flex flex-col h-[220px] card-hover-effect border border-transparent hover:border-custom-gold transition-all';
-                    // Pridaná funkcia alert pre ukážku
+                    // Pridaná jednoduchá funkcia alert pre ukážku kliknutia na "Čítať viac"
+                    // V reálnej aplikácii by to otvorilo detail textu alebo novú stránku
                     card.innerHTML = `
                         <h3 class="card-text-title text-custom-gold mb-2">${text.title}</h3>
                         <p class="card-text-excerpt text-custom-dark leading-normal mb-3 flex-grow overflow-hidden">${extractAndShortenText(text.excerpt, maxExcerptLengthTexts)}</p>
-                        <button class="read-more-button mt-auto group" onclick="alert('Funkcia Čítať viac ešte nie je implementovaná.')" aria-label="Čítať viac o ${text.title.replace(/"/g, '"')}">
+                        <button class="read-more-button mt-auto group" onclick="alert('Funkcia Čítať viac pre text \\'${text.title.replace(/'/g, "\\'")}\\' ešte nie je implementovaná.')" aria-label="Čítať viac o ${text.title.replace(/"/g, '&quot;')}">
                             <span class="relative">Čítať viac<span class="absolute left-0 -bottom-0.5 w-0 h-0.5 bg-custom-dark group-hover:w-full transition-all duration-300"></span></span>
                         </button>`;
                     textsGrid.appendChild(card);
-                } catch (e) { console.error("Chyba pri vytváraní karty textu:", e); }
+                } catch (e) {
+                    console.error("Chyba pri vytváraní karty pre placeholder text:", text.id, e);
+                }
             });
             console.log(`Mriežka textov naplnená ${textsGrid.children.length} placeholder položkami.`);
         }
 
 
-        // --- Initialization ---
-        // Spustí sa po načítaní celého HTML DOMu
+        // --- Inicializácia ---
+        // Spustí sa po načítaní a spracovaní celého HTML DOMu
         document.addEventListener('DOMContentLoaded', () => {
-            // Pridá event listener pre kliknutia na tlačidlá "Prehrať" v mriežke (delegácia udalostí)
-            // Kontrola, či existuje mriežka pred pridaním listenera
+            console.log("DOM úplne načítaný a spracovaný. Inicializujem skripty.");
+
+            // Pridá event listener pre kliknutia na tlačidlá "Prehrať" v mriežke epizód
+            // Používa delegáciu udalostí - listener je na mriežke, ale reaguje na kliknutia na tlačidlá v nej
             if (allEpisodesGrid) {
                 allEpisodesGrid.addEventListener('click', handlePlayButtonClick);
+            } else {
+                console.warn("Element #all-episodes-grid nebol nájdený, listener pre tlačidlá 'Prehrať' nebol pridaný.");
             }
 
             // Pridá event listener pre tlačidlo "Načítať ďalšie epizódy"
             if (loadMoreButton) {
                 loadMoreButton.addEventListener('click', loadMoreEpisodes);
+            } else {
+                 console.warn("Element #load-more-episodes nebol nájdený, listener pre načítanie ďalších epizód nebol pridaný.");
             }
+
+            // Pridá event listener pre odoslanie kontaktného formulára
+            // Netlify Forms vyžaduje, aby bol formulár v DOM pri načítaní stránky,
+            // preto listener pridávame tu a nečakáme na zobrazenie contact-view.
+            if (contactForm) {
+                contactForm.addEventListener('submit', handleContactFormSubmit);
+            } else {
+                 console.warn("Element #contact-form nebol nájdený, listener pre odoslanie formulára nebol pridaný.");
+            }
+
 
             // Načíta dáta z RSS a placeholder texty
             loadRssData();
             loadTextsData();
 
-            // Nastaví predvolený pohľad po načítaní (nechávame home-view ako predvolený)
+            // Nastaví predvolený pohľad po načítaní (ak žiadny nie je aktívny)
+            // Zvyčajne je 'home-view' už nastavený v HTML, ale toto je poistka.
             const anyViewActive = Array.from(views).some(view => view.classList.contains('active'));
             if (!anyViewActive && homeView) {
-                 console.log("Žiaden pohľad nie je aktívny, nastavujem 'home-view' ako predvolený.");
+                 console.log("Žiaden pohľad nie je explicitne aktívny, nastavujem 'home-view' ako predvolený.");
                  homeView.classList.add('active');
+            } else if (anyViewActive) {
+                console.log("Aktívny pohľad je už nastavený v HTML.");
+            } else {
+                console.warn("Nebol nájdený ani predvolený pohľad 'home-view'. Žiaden pohľad nie je aktívny.");
             }
 
-
-            console.log("DOM načítaný. Inicializujem stránku.");
+            console.log("Inicializácia stránky dokončená.");
         });
 
     </script>
