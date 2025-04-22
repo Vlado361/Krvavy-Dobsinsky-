@@ -11,9 +11,12 @@
     <style>
         /* Vlastné farby */
         .bg-custom-bg {
-            background-color: #C5B38C;
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23A88F66' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M0 20L20 0l20 20-20 20z' /%3E%3C/g%3E%3C/svg%3E");
+            background-color: #C5B38C; /* Základná farba pozadia platí vždy */
+            background-image: none; /* Explicitne nastavené žiadne pozadie obrázka */
         }
+
+        /* ODSTRÁNENÉ: Media query, ktorá pridávala vzor pre väčšie obrazovky */
+
         .text-custom-header-text { color: #F5F5F5; }
         .bg-custom-nav { background-color: #A88F66; }
         .bg-custom-card { background-color: #A88F66; }
@@ -28,15 +31,17 @@
         .fill-white { fill: #FFFFFF; }
 
         :root {
-             --color-gold: #E4C266;
+            --color-gold: #E4C266;
         }
 
         .from-header-start { --tw-gradient-from: #7A1B1A var(--tw-gradient-from-position); --tw-gradient-to: #7A1B1Acc var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
         .to-header-end { --tw-gradient-to: #5A0000 var(--tw-gradient-to-position); }
 
         body { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* Úprava: Zúženie maximálnej šírky kontajnera */
         .container {
-            max-width: 896px; /* Narrower content area (Tailwind max-w-4xl equivalent) */
+            max-width: 768px; /* Zúžený obsah (Tailwind max-w-3xl equivalent) */
             margin-left: auto;
             margin-right: auto;
             flex-grow: 1;
@@ -44,10 +49,9 @@
             flex-direction: column;
         }
         main {
-             flex-grow: 1;
+            flex-grow: 1;
         }
 
-        /* Removed comment block */
         .header-title { font-size: 2.25rem; font-weight: 700; transition: color 0.3s ease; cursor: default; position: relative; z-index: 2; }
         .header-subtitle { font-size: 1.125rem; position: relative; z-index: 2; }
 
@@ -166,7 +170,7 @@
         <header class="relative bg-gradient-to-b from-header-start to-header-end text-custom-header-text text-center py-16 h-[300px] flex flex-col justify-center items-center overflow-hidden">
             <svg class="header-graphic header-star fill-white top-8 left-1/4 star-pulse-1" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
             <svg class="header-graphic header-star fill-white top-16 right-1/4" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
-             <svg class="header-graphic header-star fill-white top-6 right-[15%] star-pulse-2" style="width: 7px; height: 7px; opacity: 0.5;" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
+            <svg class="header-graphic header-star fill-white top-6 right-[15%] star-pulse-2" style="width: 7px; height: 7px; opacity: 0.5;" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M5 0 L6.5 3.5 L10 5 L6.5 6.5 L5 10 L3.5 6.5 L0 5 L3.5 3.5 Z" /></svg>
             <svg class="header-graphic header-moon fill-white top-10 right-8" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" /></svg>
             <svg class="header-graphic header-eye bottom-8 left-8" viewBox="0 0 50 25" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 0 12.5 C 5 0, 45 0, 50 12.5 C 45 25, 5 25, 0 12.5 Z" class="fill-header-start"/>
@@ -178,7 +182,7 @@
             <p class="header-subtitle mt-2">Mrazivé príbehy, ktoré vám nedajú spať.</p>
         </header>
 
-        <nav id="main-nav" class="bg-custom-nav bg-opacity-90 h-auto min-h-[50px] py-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 sm:gap-x-6 lg:gap-x-10 sticky top-0 z-10 text-sm">
+        <nav id="main-nav" class="bg-custom-nav bg-opacity-90 h-auto min-h-[50px] py-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 sm:gap-x-6 lg:gap-x-10 sticky top-0 z-10 text-sm rounded-b-lg">
             <a onclick="showView('home', '#latest')" class="nav-link text-custom-header-text hover:text-custom-gold">Najnovšia epizóda</a>
             <a onclick="showView('home', '#all')" class="nav-link text-custom-header-text hover:text-custom-gold">Všetky Epizódy</a>
             <a onclick="showView('about')" class="nav-link text-custom-header-text hover:text-custom-gold">O podcaste</a>
@@ -226,101 +230,113 @@
                          </button>
                      </div>
                      <p id="all-episodes-error" class="text-red-700 mt-4" style="display: none;">Nepodarilo sa načítať epizódy.</p>
-                </section>
+                 </section>
 
-            </div> <div id="about-view" class="view">
-                <div class="relative pl-5 mb-5 h-[40px] flex items-center section-indicator">
-                    <h2 class="section-title">O podcaste</h2>
-                </div>
-                <div class="bg-custom-card rounded-lg p-6 md:p-8 flow-root">
-                    <img src="https://i.imgur.com/F9fKCIr.png"
-                         alt="Logo podcastu Krvavý Dobšinský"
-                         class="w-32 h-32 md:w-40 md:h-40 rounded-md flex-shrink-0 object-cover mb-4 mr-6 shadow-md float-left"
-                         onerror="this.style.display='none'">
-                    <div class="about-text text-left">
-                        <p>Krvavý Dobšinský je originálny slovenský podcast plný strachu, symboliky a temnej krásy rozprávania. Už niekoľko rokov píšem a nahrávam vlastné strašidelné príbehy, ktoré čerpajú z folklóru, snov, tieňov aj z toho, čo si so sebou nesieme z detstva. Každá epizóda je napísaná autorsky – od prvého slova až po posledný dozvuk.</p>
-                        <p>Tento podcast vznikol ako osobný projekt. Bez plánov, bez produkčného tímu, len s túžbou rozprávať. Dnes má viac ako milión vypočutí a tisíce verných fanúšikov, ktorí sa vracajú pre atmosféru, akú inde nenájdu.</p>
-                        <p>Čo robí Krvavého Dobšinského výnimočným, je profesionálny zvukový dizajn, ktorý posúva príbehy ďaleko za hranice bežného rozprávania. Namiesto klasickej narácie vytváram akustický svet, kde počuť les, dych, vietor, dvere, ticho – a niekedy aj to, čo by tam byť nemalo.</p>
-                        <p>Podcast nesie meno po Pavlovi Dobšinskom, ale jeho tón je iný: temnejší, existenciálnejší, intímnejší. Ak ťa lákajú strašidelné príbehy, slovenské legendy, záhadné zmiznutia a svet, kde sa prelína realita s podvedomím – vitaj.</p>
-                        <p>Toto je podcast, ktorý nepočúvaš len ušami. Cítiš ho v tele.</p>
-                    </div>
-                </div>
-            </div> <div id="subscribe-view" class="view">
-                <div class="relative pl-5 mb-5 h-[40px] flex items-center section-indicator">
-                    <h2 class="section-title">Odoberať</h2>
-                </div>
-                <div class="bg-custom-card rounded-lg p-6 md:p-8">
-                    <p class="subscribe-text text-custom-dark mb-4">Nech ti žiadny príbeh neunikne.</p>
-                    <p class="subscribe-text text-custom-dark mb-4">Nové epizódy vychádzajú väčšinou každú stredu – no niekedy sa ozve aj niečo nečakané.</p>
-                    <p class="subscribe-text text-custom-dark mb-6">Pridaj si Krvavého Dobšinského medzi obľúbené a buď pri tom, keď sa opäť otvorí brána do tmy.</p>
-                    <div class="flex flex-wrap gap-4">
-                         <a href="https://open.spotify.com/show/1jpZ723mEpLld7bZeZ2wdE?si=3d80f84aed5d4515" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Odoberať na Spotify"> Spotify </a>
-                         <a href="https://podcasts.apple.com/sk/podcast/krvav%C3%BD-dob%C5%A1insk%C3%BD/id1608900257" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Odoberať na Apple Podcasts"> Apple Podcasts </a>
-                         <a href="https://www.instagram.com/krvavydobsinsky/" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Sledovať na Instagrame"> Instagram </a>
-                    </div>
-                </div>
-            </div> <div id="contact-view" class="view">
-                <div class="relative pl-5 mb-5 h-[40px] flex items-center section-indicator">
-                    <h2 class="section-title">Kontaktujte ma</h2>
-                </div>
-                <div class="bg-custom-card rounded-lg p-6 md:p-8">
-                    <p class="text-custom-dark mb-4 leading-relaxed">Máte príbeh, ktorý vám nedá spávať?</p>
-                    <p class="text-custom-dark mb-4 leading-relaxed">Možno ste ho zažili na vlastnej koži. Možno vám ho rozprávala stará mama. Možno sa stal… a možno nie.</p>
-                    <p class="text-custom-dark mb-6 leading-relaxed">Ak vo vás niečo zostalo – pocit, spomienka, príbeh – napíšte mi. Občas vyberiem niektorý z nich a spracujem ho do epizódy podcastu.</p>
-                    <p class="text-custom-dark mb-8 font-semibold">Nebojte sa – stačia slová. Atmosféru už doladím ja.</p>
-                    <form id="contact-form" name="podcast-contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="handleContactFormSubmit(event)">
-                        <input type="hidden" name="form-name" value="podcast-contact" />
-                        <p style="display: none;"><label>Nevypĺňajte toto pole, ak ste človek: <input name="bot-field" /></label></p>
-                        <div class="mb-4">
-                            <label for="name" class="form-label">Vaše meno alebo prezývka <span class="form-note">(nepovinné)</span></label>
-                            <input type="text" id="name" name="name" class="form-input" autocomplete="name">
-                        </div>
-                        <div class="mb-4">
-                            <label for="email" class="form-label">E-mail <span class="form-note">(nepovinné, ak chcete, aby som sa ozval)</span></label>
-                            <input type="email" id="email" name="email" class="form-input" autocomplete="email">
-                        </div>
-                        <div class="mb-4">
-                            <label for="story-title" class="form-label">Názov príbehu <span class="form-note">(nepovinné)</span></label>
-                            <input type="text" id="story-title" name="story-title" class="form-input">
-                        </div>
-                        <div class="mb-6">
-                            <label for="story" class="form-label">Váš príbeh <span class="text-red-600">*</span></label>
-                            <textarea id="story" name="story" class="form-textarea" required aria-required="true"></textarea>
-                        </div>
-                        <div>
-                            <button type="submit" class="form-button">Odoslať príbeh</button>
-                        </div>
-                    </form>
+            </div>
+
+            <div id="about-view" class="view">
+                 <div class="relative pl-5 mb-5 h-[40px] flex items-center section-indicator">
+                     <h2 class="section-title">O podcaste</h2>
+                 </div>
+                 <div class="bg-custom-card rounded-lg p-6 md:p-8 flow-root">
+                     <img src="https://i.imgur.com/F9fKCIr.png"
+                          alt="Logo podcastu Krvavý Dobšinský"
+                          class="w-32 h-32 md:w-40 md:h-40 rounded-md flex-shrink-0 object-cover mb-4 mr-6 shadow-md float-left"
+                          onerror="this.style.display='none'">
+                     <div class="about-text text-left">
+                         <p>Krvavý Dobšinský je originálny slovenský podcast plný strachu, symboliky a temnej krásy rozprávania. Už niekoľko rokov píšem a nahrávam vlastné strašidelné príbehy, ktoré čerpajú z folklóru, snov, tieňov aj z toho, čo si so sebou nesieme z detstva. Každá epizóda je napísaná autorsky – od prvého slova až po posledný dozvuk.</p>
+                         <p>Tento podcast vznikol ako osobný projekt. Bez plánov, bez produkčného tímu, len s túžbou rozprávať. Dnes má viac ako milión vypočutí a tisíce verných fanúšikov, ktorí sa vracajú pre atmosféru, akú inde nenájdu.</p>
+                         <p>Čo robí Krvavého Dobšinského výnimočným, je profesionálny zvukový dizajn, ktorý posúva príbehy ďaleko za hranice bežného rozprávania. Namiesto klasickej narácie vytváram akustický svet, kde počuť les, dych, vietor, dvere, ticho – a niekedy aj to, čo by tam byť nemalo.</p>
+                         <p>Podcast nesie meno po Pavlovi Dobšinskom, ale jeho tón je iný: temnejší, existenciálnejší, intímnejší. Ak ťa lákajú strašidelné príbehy, slovenské legendy, záhadné zmiznutia a svet, kde sa prelína realita s podvedomím – vitaj.</p>
+                         <p>Toto je podcast, ktorý nepočúvaš len ušami. Cítiš ho v tele.</p>
+                     </div>
+                 </div>
+            </div>
+
+            <div id="subscribe-view" class="view">
+                 <div class="relative pl-5 mb-5 h-[40px] flex items-center section-indicator">
+                     <h2 class="section-title">Odoberať</h2>
+                 </div>
+                 <div class="bg-custom-card rounded-lg p-6 md:p-8">
+                     <p class="subscribe-text text-custom-dark mb-4">Nech ti žiadny príbeh neunikne.</p>
+                     <p class="subscribe-text text-custom-dark mb-4">Nové epizódy vychádzajú väčšinou každú stredu – no niekedy sa ozve aj niečo nečakané.</p>
+                     <p class="subscribe-text text-custom-dark mb-6">Pridaj si Krvavého Dobšinského medzi obľúbené a buď pri tom, keď sa opäť otvorí brána do tmy.</p>
+                     <div class="flex flex-wrap gap-4">
+                          <a href="https://open.spotify.com/show/1jpZ723mEpLld7bZeZ2wdE?si=3d80f84aed5d4515" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Odoberať na Spotify"> Spotify </a>
+                          <a href="https://podcasts.apple.com/sk/podcast/krvav%C3%BD-dob%C5%A1insk%C3%BD/id1608900257" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Odoberať na Apple Podcasts"> Apple Podcasts </a>
+                          <a href="https://www.instagram.com/krvavydobsinsky/" target="_blank" rel="noopener noreferrer" class="subscribe-button" aria-label="Sledovať na Instagrame"> Instagram </a>
+                     </div>
+                 </div>
+            </div>
+
+            <div id="contact-view" class="view">
+                 <div class="relative pl-5 mb-5 h-[40px] flex items-center section-indicator">
+                     <h2 class="section-title">Kontaktujte ma</h2>
+                 </div>
+                 <div class="bg-custom-card rounded-lg p-6 md:p-8">
+                     <p class="text-custom-dark mb-4 leading-relaxed">Máte príbeh, ktorý vám nedá spávať?</p>
+                     <p class="text-custom-dark mb-4 leading-relaxed">Možno ste ho zažili na vlastnej koži. Možno vám ho rozprávala stará mama. Možno sa stal… a možno nie.</p>
+                     <p class="text-custom-dark mb-6 leading-relaxed">Ak vo vás niečo zostalo – pocit, spomienka, príbeh – napíšte mi. Občas vyberiem niektorý z nich a spracujem ho do epizódy podcastu.</p>
+                     <p class="text-custom-dark mb-8 font-semibold">Nebojte sa – stačia slová. Atmosféru už doladím ja.</p>
+                     <form id="contact-form" name="podcast-contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="handleContactFormSubmit(event)">
+                         <input type="hidden" name="form-name" value="podcast-contact" />
+                         <p style="display: none;"><label>Nevypĺňajte toto pole, ak ste človek: <input name="bot-field" /></label></p>
+                         <div class="mb-4">
+                             <label for="name" class="form-label">Vaše meno alebo prezývka <span class="form-note">(nepovinné)</span></label>
+                             <input type="text" id="name" name="name" class="form-input" autocomplete="name">
+                         </div>
+                         <div class="mb-4">
+                             <label for="email" class="form-label">E-mail <span class="form-note">(nepovinné, ak chcete, aby som sa ozval)</span></label>
+                             <input type="email" id="email" name="email" class="form-input" autocomplete="email">
+                         </div>
+                         <div class="mb-4">
+                             <label for="story-title" class="form-label">Názov príbehu <span class="form-note">(nepovinné)</span></label>
+                             <input type="text" id="story-title" name="story-title" class="form-input">
+                         </div>
+                         <div class="mb-6">
+                             <label for="story" class="form-label">Váš príbeh <span class="text-red-600">*</span></label>
+                             <textarea id="story" name="story" class="form-textarea" required aria-required="true"></textarea>
+                         </div>
+                         <div>
+                             <button type="submit" class="form-button">Odoslať príbeh</button>
+                         </div>
+                     </form>
                      <p id="form-success-message" class="mt-4 text-green-700 font-semibold" style="display: none;">Ďakujem! Váš príbeh bol úspešne odoslaný.</p>
                      <p id="form-error-message" class="mt-4 text-red-700 font-semibold" style="display: none;">Chyba: Vyplňte prosím pole "Váš príbeh".</p>
-                </div>
-            </div> <div id="texts-view" class="view">
-                <div class="relative pl-5 mb-5 h-[40px] flex items-center section-indicator">
-                    <h2 class="section-title">Texty</h2>
-                </div>
-                <p class="text-custom-dark mb-6 leading-relaxed">Tu nájdete prepisy vybraných epizód alebo iné bonusové texty k podcastu Krvavý Dobšinský.</p>
-                <div id="texts-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="loading-placeholder col-span-full h-24">Načítavam texty...</div>
-                </div>
-                <p id="texts-error" class="text-red-700 mt-4" style="display: none;">Nepodarilo sa načítať texty.</p>
-            </div> </main>
+                 </div>
+            </div>
 
-        <footer class="bg-custom-dark text-custom-header-text text-center py-4 h-[50px] flex items-center justify-center mt-auto">
+            <div id="texts-view" class="view">
+                 <div class="relative pl-5 mb-5 h-[40px] flex items-center section-indicator">
+                     <h2 class="section-title">Texty</h2>
+                 </div>
+                 <p class="text-custom-dark mb-6 leading-relaxed">Tu nájdete prepisy vybraných epizód alebo iné bonusové texty k podcastu Krvavý Dobšinský.</p>
+                 <div id="texts-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                     <div class="loading-placeholder col-span-full h-24">Načítavam texty...</div>
+                 </div>
+                 <p id="texts-error" class="text-red-700 mt-4" style="display: none;">Nepodarilo sa načítať texty.</p>
+            </div>
+
+        </main>
+
+        <footer class="bg-custom-dark text-custom-header-text text-center py-4 h-[50px] flex items-center justify-center mt-auto rounded-t-lg">
             <p class="footer-text">© 2025 Krvavý Dobšinský. Všetky práva vyhradené.</p>
         </footer>
 
-    </div> <script>
+    </div>
+
+    <script>
         // --- Configuration ---
-        const rssFeedUrl = 'https://anchor.fm/s/8db2e1ec/podcast/rss';
-        const defaultImageUrl = 'https://i.imgur.com/F9fKCIr.png';
-        const maxDescriptionLengthPlayer = 200;
-        const maxDescriptionLengthGrid = 80;
-        const maxExcerptLengthTexts = 120;
-        const episodesPerPage = 3;
+        const rssFeedUrl = 'https://anchor.fm/s/8db2e1ec/podcast/rss'; // URL RSS feedu
+        const defaultImageUrl = 'https://i.imgur.com/F9fKCIr.png'; // Predvolený obrázok
+        const maxDescriptionLengthPlayer = 200; // Max dĺžka popisu v prehrávači
+        const maxDescriptionLengthGrid = 80; // Max dĺžka popisu v mriežke
+        const maxExcerptLengthTexts = 120; // Max dĺžka úryvku v sekcii Texty
+        const episodesPerPage = 3; // Počet epizód na stránku (pre "Načítať ďalšie")
 
         // --- Global Variables ---
-        let allParsedEpisodes = [];
-        let displayedEpisodesCount = 0;
+        let allParsedEpisodes = []; // Pole pre všetky načítané epizódy z RSS
+        let displayedEpisodesCount = 0; // Počet aktuálne zobrazených epizód
 
         // --- DOM Element References ---
         const playerSection = document.getElementById('latest');
@@ -340,7 +356,7 @@
         const aboutView = document.getElementById('about-view');
         const textsView = document.getElementById('texts-view');
         const subscribeView = document.getElementById('subscribe-view');
-        const views = document.querySelectorAll('.view');
+        const views = document.querySelectorAll('.view'); // Všetky sekcie/pohľady
         const contactForm = document.getElementById('contact-form');
         const formSuccessMessage = document.getElementById('form-success-message');
         const formErrorMessage = document.getElementById('form-error-message');
@@ -349,161 +365,267 @@
 
 
         // --- View Management ---
+        /**
+         * Zobrazí špecifikovaný pohľad (sekciu) a skryje ostatné.
+         * @param {string} viewId ID pohľadu na zobrazenie (napr. 'home', 'about').
+         * @param {string|null} scrollToSelector CSS selektor elementu, ku ktorému sa má posunúť. Ak null, posunie sa na vrch.
+         */
         function showView(viewId, scrollToSelector = null) {
-            console.log(`Switching to view: ${viewId}, scroll target: ${scrollToSelector || 'none'}`);
+            console.log(`Prepínam na pohľad: ${viewId}, cieľ posunu: ${scrollToSelector || 'žiadny'}`);
+            // Skryje všetky pohľady
             views.forEach(view => view.classList.remove('active'));
+            // Nájde a zobrazí aktívny pohľad
             const activeView = document.getElementById(`${viewId}-view`);
             if (activeView) {
                 activeView.classList.add('active');
+                // Posunutie (scroll) k cieľovému elementu alebo na vrch
                 if (scrollToSelector) {
                     const elementToScroll = activeView.querySelector(scrollToSelector);
                     if (elementToScroll) {
+                        // Timeout zaručí, že scroll sa vykoná až po vykreslení
                         setTimeout(() => {
                             elementToScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }, 0);
                     } else {
-                        console.warn(`Scroll target '${scrollToSelector}' not found in view '${viewId}'. Scrolling to top.`);
+                        console.warn(`Cieľ posunu '${scrollToSelector}' nebol nájdený v pohľade '${viewId}'. Posúvam na vrch.`);
                         setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
                     }
                 } else {
-                     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
+                    // Ak nie je špecifikovaný cieľ, posunie sa na vrch stránky
+                    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
                 }
             } else {
-                console.error(`View '${viewId}-view' not found. Defaulting to home.`);
+                // Fallback, ak sa pohľad nenájde
+                console.error(`Pohľad '${viewId}-view' nebol nájdený. Zobrazujem domovskú stránku.`);
                 homeView.classList.add('active');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
         // --- Utility Functions ---
+        /**
+         * Formátuje dátumový reťazec do slovenského formátu.
+         * @param {string} dateString Dátumový reťazec (napr. z RSS).
+         * @returns {string} Formátovaný dátum alebo pôvodný reťazec pri chybe.
+         */
         function formatSlovakDate(dateString) {
-            try { const date = new Date(dateString); if (isNaN(date.getTime())) throw new Error("Invalid date"); return date.toLocaleDateString('sk-SK', { year: 'numeric', month: 'long', day: 'numeric' }); } catch (e) { console.error("Date formatting error:", dateString, e); return dateString; }
+            try {
+                const date = new Date(dateString);
+                // Skontroluje, či je dátum platný
+                if (isNaN(date.getTime())) throw new Error("Invalid date");
+                return date.toLocaleDateString('sk-SK', { year: 'numeric', month: 'long', day: 'numeric' });
+            } catch (e) {
+                console.error("Chyba formátovania dátumu:", dateString, e);
+                return dateString; // Vráti pôvodný reťazec, ak nastane chyba
+            }
         }
+
+        /**
+         * Extrahuje čistý text z HTML reťazca a skráti ho na maximálnu dĺžku.
+         * @param {string} htmlString HTML reťazec (napr. popis epizódy).
+         * @param {number} [maxLength=100] Maximálna dĺžka výsledného textu.
+         * @returns {string} Skrátený čistý text.
+         */
         function extractAndShortenText(htmlString, maxLength = 100) {
-            if (!htmlString) return ""; const tempDiv = document.createElement('div'); tempDiv.innerHTML = htmlString; let text = (tempDiv.textContent || tempDiv.innerText || "").trim(); text = text.replace(/https?:\/\/[^\s]+$/, '').trim(); return text.length > maxLength ? text.substring(0, maxLength).trim() + '...' : text;
+            if (!htmlString) return ""; // Vráti prázdny reťazec, ak je vstup null alebo undefined
+            // Vytvorí dočasný div element na parsovanie HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlString;
+            // Získa textový obsah, odstráni HTML tagy a biele znaky na začiatku/konci
+            let text = (tempDiv.textContent || tempDiv.innerText || "").trim();
+            // Odstráni prípadné URL na konci popisu (časté v Anchor.fm popisoch)
+            text = text.replace(/https?:\/\/[^\s]+$/, '').trim();
+            // Skráti text, ak je dlhší ako povolené maximum
+            return text.length > maxLength ? text.substring(0, maxLength).trim() + '...' : text;
         }
 
         // --- Event Handlers ---
+        /**
+         * Spracuje kliknutie na tlačidlo "Prehrať" v mriežke epizód.
+         * Aktualizuje hlavný prehrávač údajmi z kliknutej epizódy.
+         * @param {Event} event Udalosť kliknutia.
+         */
         function handlePlayButtonClick(event) {
-            const button = event.target.closest('.play-button'); if (!button) return; const audioSrc = button.dataset.audioSrc; const title = button.dataset.title; const imgSrc = button.dataset.imgSrc || defaultImageUrl; if (!audioSrc) { console.error("Audio source missing."); return; } console.log(`Playing: ${title}`); playerTitle.textContent = title || "Neznáma epizóda"; playerDate.textContent = button.closest('article')?.querySelector('.episode-date')?.textContent || ''; playerDescription.textContent = extractAndShortenText(button.closest('article')?.dataset.fullDesc || '', maxDescriptionLengthPlayer) || "Popis nie je k dispozícii."; playerImage.src = imgSrc; playerImage.onerror = () => { playerImage.src = defaultImageUrl; playerImage.onerror = null; }; if (playerAudio.src !== audioSrc) { playerAudio.src = audioSrc; playerAudio.load(); playerAudio.play().catch(e => console.error("Audio playback error:", e)); } else if (playerAudio.paused) { playerAudio.play().catch(e => console.error("Audio playback error:", e)); } playerCard.classList.add('loaded'); playerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Nájde najbližšie tlačidlo s triedou .play-button
+            const button = event.target.closest('.play-button');
+            if (!button) return; // Ak sa nekliklo na tlačidlo alebo jeho potomka, nerobí nič
+
+            // Získa dáta epizódy z data atribútov tlačidla
+            const audioSrc = button.dataset.audioSrc;
+            const title = button.dataset.title;
+            const imgSrc = button.dataset.imgSrc || defaultImageUrl; // Použije predvolený obrázok, ak nie je špecifikovaný
+
+            if (!audioSrc) {
+                console.error("Chýba zdroj audia pre tlačidlo.");
+                return;
+            }
+
+            console.log(`Prehrávam: ${title}`);
+
+            // Aktualizuje obsah hlavného prehrávača
+            playerTitle.textContent = title || "Neznáma epizóda";
+            // Získa dátum a popis z rodičovského article elementu
+            const articleElement = button.closest('article');
+            playerDate.textContent = articleElement?.querySelector('.episode-date')?.textContent || '';
+            playerDescription.textContent = extractAndShortenText(articleElement?.dataset.fullDesc || '', maxDescriptionLengthPlayer) || "Popis nie je k dispozícii.";
+            playerImage.src = imgSrc;
+            // Fallback pre obrázok, ak sa nenačíta
+            playerImage.onerror = () => { playerImage.src = defaultImageUrl; playerImage.onerror = null; };
+
+            // Načíta a spustí audio, len ak je to iný zdroj alebo je prehrávač pozastavený
+            if (playerAudio.src !== audioSrc) {
+                playerAudio.src = audioSrc;
+                playerAudio.load(); // Načíta nový zdroj
+                playerAudio.play().catch(e => console.error("Chyba prehrávania audia:", e)); // Spustí prehrávanie
+            } else if (playerAudio.paused) {
+                playerAudio.play().catch(e => console.error("Chyba prehrávania audia:", e)); // Pokračuje v prehrávaní
+            }
+
+            // Zobrazí obsah prehrávača (ak bol skrytý placeholderom)
+            playerCard.classList.add('loaded');
+            // Posunie zobrazenie na sekciu prehrávača
+            playerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Updated handleContactFormSubmit for Netlify
+        /**
+         * Spracuje odoslanie kontaktného formulára pre Netlify.
+         * @param {Event} event Udalosť odoslania formulára.
+         */
         function handleContactFormSubmit(event) {
-            event.preventDefault();
+            event.preventDefault(); // Zabraňuje predvolenému odoslaniu formulára
+            // Skryje predchádzajúce správy
             formSuccessMessage.style.display = 'none';
             formErrorMessage.style.display = 'none';
+
+            // Validácia: Skontroluje, či je vyplnené pole "Váš príbeh"
             const storyText = document.getElementById('story').value.trim();
             if (!storyText) {
                 formErrorMessage.textContent = 'Chyba: Pole "Váš príbeh" je povinné.';
                 formErrorMessage.style.display = 'block';
-                document.getElementById('story').focus();
-                return;
+                document.getElementById('story').focus(); // Zameria sa na povinné pole
+                return; // Ukončí funkciu
             }
 
+            // Vizuálna spätná väzba počas odosielania
             const submitButton = contactForm.querySelector('button[type="submit"]');
             if (submitButton) {
-                submitButton.classList.add('pulse-animation');
-                submitButton.textContent = 'Odosielam...';
-                submitButton.disabled = true;
+                submitButton.classList.add('pulse-animation'); // Pridá animáciu
+                submitButton.textContent = 'Odosielam...'; // Zmení text tlačidla
+                submitButton.disabled = true; // Deaktivuje tlačidlo
             }
 
+            // Simulácia odoslania pre lokálny vývoj (localhost alebo 127.0.0.1)
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 setTimeout(() => {
-                    console.log("Form submitted (simulation):", Object.fromEntries(new FormData(contactForm)));
+                    console.log("Formulár odoslaný (simulácia):", Object.fromEntries(new FormData(contactForm)));
                     formSuccessMessage.textContent = 'Ďakujem! Váš príbeh bol úspešne odoslaný (simulácia).';
                     formSuccessMessage.style.display = 'block';
-                    contactForm.reset();
-                    if (submitButton) {
+                    contactForm.reset(); // Vyčistí formulár
+                    if (submitButton) { // Obnoví stav tlačidla
                         submitButton.classList.remove('pulse-animation');
                         submitButton.textContent = 'Odoslať príbeh';
                         submitButton.disabled = false;
                     }
+                    // Skryje správu o úspechu po 5 sekundách
                     setTimeout(() => { formSuccessMessage.style.display = 'none'; }, 5000);
-                }, 1000);
-                return;
+                }, 1000); // Simulované oneskorenie 1 sekunda
+                return; // Ukončí funkciu pre lokálny vývoj
             }
 
+            // Skutočné odoslanie formulára na Netlify pomocou Fetch API
             fetch('/', {
                 method: 'POST',
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(new FormData(contactForm)).toString()
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }, // Potrebný header pre Netlify
+                body: new URLSearchParams(new FormData(contactForm)).toString() // Konvertuje dáta formulára na správny formát
             })
             .then(response => {
-                if (response.ok) {
+                if (response.ok) { // Ak Netlify odpovie úspešne (stav 2xx)
                     formSuccessMessage.textContent = 'Ďakujem! Váš príbeh bol úspešne odoslaný.';
                     formSuccessMessage.style.display = 'block';
-                    contactForm.reset();
-                } else {
-                    response.text().then(text => {
-                         formErrorMessage.textContent = `Chyba pri odosielaní: ${text || response.statusText}`;
-                         formErrorMessage.style.display = 'block';
+                    contactForm.reset(); // Vyčistí formulár
+                } else { // Ak nastala chyba na strane servera
+                    response.text().then(text => { // Pokúsi sa získať text chyby z odpovede
+                        formErrorMessage.textContent = `Chyba pri odosielaní: ${text || response.statusText}`;
+                        formErrorMessage.style.display = 'block';
                     });
-                    throw new Error('Nastala chyba pri odosielaní');
+                    throw new Error('Nastala chyba pri odosielaní formulára'); // Vyvolá chybu pre .catch blok
                 }
             })
-            .catch(error => {
-                console.error("Form submission error:", error);
+            .catch(error => { // Spracovanie chýb (sieťové problémy, chyby servera)
+                console.error("Chyba odosielania formulára:", error);
+                // Zobrazí chybovú správu, len ak už nie je zobrazená iná
                 if (formErrorMessage.style.display === 'none') {
                     formErrorMessage.textContent = `Chyba: ${error.message}. Skúste to prosím znova.`;
                     formErrorMessage.style.display = 'block';
                 }
             })
-            .finally(() => {
-                 if (submitButton) {
-                    submitButton.classList.remove('pulse-animation');
-                    submitButton.textContent = 'Odoslať príbeh';
-                    submitButton.disabled = false;
+            .finally(() => { // Tento blok sa vykoná vždy (po úspechu aj chybe)
+                 if (submitButton) { // Obnoví stav tlačidla
+                     submitButton.classList.remove('pulse-animation');
+                     submitButton.textContent = 'Odoslať príbeh';
+                     submitButton.disabled = false;
                  }
-                setTimeout(() => { formSuccessMessage.style.display = 'none'; }, 5000);
+                 // Skryje správu o úspechu po 5 sekundách (ak bola zobrazená)
+                 setTimeout(() => { formSuccessMessage.style.display = 'none'; }, 5000);
             });
         }
 
         // --- Paginácia Epizód ---
         /**
-         * Zobrazí ďalšiu dávku epizód.
+         * Načíta a zobrazí ďalšiu dávku epizód do mriežky.
          */
         function loadMoreEpisodes() {
-            const startIndex = displayedEpisodesCount;
+            const startIndex = displayedEpisodesCount; // Začína od posledne zobrazeného indexu
+            // Končí na konci poľa alebo po pridaní `episodesPerPage` epizód
             const endIndex = Math.min(startIndex + episodesPerPage, allParsedEpisodes.length);
 
-            console.log(`Loading episodes from ${startIndex} to ${endIndex - 1}`);
+            console.log(`Načítavam epizódy od ${startIndex} do ${endIndex - 1}`);
 
+            // Prejde cez dávku epizód na zobrazenie
             for (let i = startIndex; i < endIndex; i++) {
-                const item = allParsedEpisodes[i];
+                const item = allParsedEpisodes[i]; // Aktuálny XML element epizódy
                 try {
+                    // Získa dáta z XML elementu
                     const title = item.querySelector("title")?.textContent || `Epizóda ${i + 1}`;
                     const pubDate = item.querySelector("pubDate")?.textContent || "";
+                    // Preferuje content:encoded, fallback na description
                     const descriptionHtml = item.querySelector("content\\:encoded")?.textContent || item.querySelector("description")?.textContent || "";
                     const audioUrl = item.querySelector("enclosure")?.getAttribute("url") || "";
                     const imageUrl = item.querySelector("itunes\\:image")?.getAttribute("href") || defaultImageUrl;
 
+                    // Vytvorí HTML element pre kartu epizódy
                     const card = document.createElement('article');
-                    card.dataset.fullDesc = descriptionHtml;
-                    card.className = 'bg-custom-card rounded-lg p-5 flex flex-col h-[220px] card-hover-effect border border-transparent hover:border-custom-gold transition-all';
+                    card.dataset.fullDesc = descriptionHtml; // Uloží plný popis pre prehrávač
+                    card.className = 'bg-custom-card rounded-lg p-5 flex flex-col h-[220px] card-hover-effect border border-transparent hover:border-custom-gold transition-all'; // Styling karty
+                    // Vloží vnútorné HTML karty
                     card.innerHTML = `
                         <h3 class="card-episode-title text-custom-gold mb-1">${title}</h3>
                         <p class="episode-date text-custom-date mb-2">${formatSlovakDate(pubDate)}</p>
                         <p class="card-episode-desc text-custom-dark leading-normal mb-3 flex-grow overflow-hidden">${extractAndShortenText(descriptionHtml, maxDescriptionLengthGrid)}</p>
                         <button class="play-button mt-auto group" data-audio-src="${audioUrl}" data-title="${title.replace(/"/g, '"')}" data-img-src="${imageUrl}" aria-label="Prehrať epizódu ${title.replace(/"/g, '"')}">
-                            <svg viewBox="0 0 24 24" width="1em" height="1em" class="fill-current transition-transform duration-300 group-hover:scale-110" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+                            <svg viewBox="0 0 24 24" width="1em" height="1em" class="fill-current transition-transform duration-300 group-hover:scale-110 mr-2" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
                             <span class="relative">Prehrať
                                 <span class="absolute left-0 -bottom-0.5 w-0 h-0.5 bg-custom-dark group-hover:w-full transition-all duration-300"></span>
                             </span>
                         </button>`;
+                    // Pridá kartu do mriežky
                     allEpisodesGrid.appendChild(card);
                 } catch (e) {
-                    console.error(`Error processing episode #${i + 1} for grid:`, e);
+                    console.error(`Chyba spracovania epizódy #${i + 1} pre mriežku:`, e);
+                    // V prípade chyby pri spracovaní jednej epizódy pokračuje ďalšou
                 }
             }
 
+            // Aktualizuje počet zobrazených epizód
             displayedEpisodesCount = endIndex;
 
-            // Aktualizácia tlačidla "Načítať ďalšie"
+            // Aktualizuje stav tlačidla "Načítať ďalšie"
             if (loadMoreContainer && loadMoreButton) {
                 if (displayedEpisodesCount >= allParsedEpisodes.length) {
+                    // Ak sú zobrazené všetky epizódy, skryje tlačidlo
                     loadMoreContainer.style.display = 'none';
                 } else {
+                    // Inak zobrazí tlačidlo
                     loadMoreContainer.style.display = 'block';
                 }
             }
@@ -511,99 +633,141 @@
 
 
         // --- Data Loading ---
+        /**
+         * Načíta a spracuje dáta z RSS feedu.
+         */
         function loadRssData() {
-            console.log("Loading RSS feed...");
+            console.log("Načítavam RSS feed...");
+            // Resetuje stav pred načítaním
             allParsedEpisodes = [];
             displayedEpisodesCount = 0;
-            allEpisodesGrid.innerHTML = '<div class="loading-placeholder col-span-full h-24">Načítavam epizódy...</div>';
-            if(loadMoreContainer) loadMoreContainer.style.display = 'none';
+            allEpisodesGrid.innerHTML = '<div class="loading-placeholder col-span-full h-24">Načítavam epizódy...</div>'; // Zobrazí placeholder
+            if(loadMoreContainer) loadMoreContainer.style.display = 'none'; // Skryje tlačidlo "Načítať ďalšie"
 
+            // Načíta RSS feed
             fetch(rssFeedUrl)
-                .then(response => { if (!response.ok) throw new Error(`Network error: ${response.statusText}`); return response.text(); })
-                .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+                .then(response => {
+                    // Skontroluje, či bola odpoveď úspešná
+                    if (!response.ok) throw new Error(`Sieťová chyba: ${response.statusText}`);
+                    return response.text(); // Prečíta odpoveď ako text
+                })
+                .then(str => new window.DOMParser().parseFromString(str, "text/xml")) // Paruje XML text
                 .then(data => {
-                    console.log("RSS Feed parsed.");
-                    const items = data.querySelectorAll("item");
-                    if (!items || items.length === 0) throw new Error("No episode items in feed.");
+                    console.log("RSS Feed úspešne spracovaný.");
+                    const items = data.querySelectorAll("item"); // Nájde všetky elementy <item> (epizódy)
+                    if (!items || items.length === 0) throw new Error("V RSS feede neboli nájdené žiadne epizódy.");
 
+                    // Uloží všetky nájdené epizódy do globálnej premennej
                     allParsedEpisodes = Array.from(items);
 
-                    const firstItem = allParsedEpisodes[0];
+                    // ---- Spracovanie najnovšej epizódy pre prehrávač ----
+                    const firstItem = allParsedEpisodes[0]; // Prvá epizóda je najnovšia
                     try {
+                        // Získa dáta pre prehrávač
                         const title = firstItem.querySelector("title")?.textContent || "Neznámy názov";
                         const pubDate = firstItem.querySelector("pubDate")?.textContent || "";
                         const descriptionHtml = firstItem.querySelector("content\\:encoded")?.textContent || firstItem.querySelector("description")?.textContent || "";
                         const audioUrl = firstItem.querySelector("enclosure")?.getAttribute("url") || "";
                         const imageUrl = firstItem.querySelector("itunes\\:image")?.getAttribute("href") || defaultImageUrl;
+
+                        // Aktualizuje DOM elementy prehrávača
                         playerTitle.textContent = title;
                         playerDate.textContent = formatSlovakDate(pubDate);
                         playerDescription.textContent = extractAndShortenText(descriptionHtml, maxDescriptionLengthPlayer);
                         playerImage.src = imageUrl;
-                        playerImage.onerror = () => { playerImage.src = defaultImageUrl; playerImage.onerror = null; };
+                        playerImage.onerror = () => { playerImage.src = defaultImageUrl; playerImage.onerror = null; }; // Fallback obrázka
                         playerAudio.src = audioUrl;
-                        playerCard.classList.add('loaded');
+                        playerCard.classList.add('loaded'); // Odstráni placeholder prehrávača
                     } catch (e) {
-                        console.error("Error processing latest episode:", e);
-                        rssError.textContent = 'Chyba spracovania najnovšej epizódy.'; rssError.style.display = 'block';
-                        playerCard.classList.add('loaded'); playerTitle.textContent = 'Chyba'; playerDate.textContent = '-'; playerDescription.textContent = 'Nepodarilo sa načítať.'; playerImage.src = defaultImageUrl; playerImage.style.display = 'block'; playerAudio.style.display = 'none';
+                        // Spracovanie chyby pri načítaní najnovšej epizódy
+                        console.error("Chyba spracovania najnovšej epizódy:", e);
+                        rssError.textContent = 'Chyba pri spracovaní najnovšej epizódy.';
+                        rssError.style.display = 'block';
+                        // Zobrazí chybový stav v prehrávači
+                        playerCard.classList.add('loaded');
+                        playerTitle.textContent = 'Chyba';
+                        playerDate.textContent = '-';
+                        playerDescription.textContent = 'Nepodarilo sa načítať.';
+                        playerImage.src = defaultImageUrl;
+                        playerImage.style.display = 'block'; // Zobrazí defaultný obrázok
+                        playerAudio.style.display = 'none'; // Skryje nefunkčný prehrávač
                     }
 
-                    allEpisodesGrid.innerHTML = ''; // Clear loader before loading first batch
-                    loadMoreEpisodes(); // Load the first page
+                    // ---- Načítanie prvej dávky epizód do mriežky ----
+                    allEpisodesGrid.innerHTML = ''; // Vymaže placeholder z mriežky
+                    loadMoreEpisodes(); // Zavolá funkciu na načítanie prvej stránky epizód
 
                 })
                 .catch(error => {
-                    console.error("Failed to load RSS feed:", error);
-                    rssError.textContent = `Chyba načítania podcastu: ${error.message}.`; rssError.style.display = 'block';
-                    allEpisodesError.textContent = `Chyba načítania epizód: ${error.message}.`; allEpisodesError.style.display = 'block';
-                    playerCard.classList.add('loaded'); playerTitle.textContent = 'Chyba'; playerDate.textContent = '-'; playerDescription.textContent = 'Nepodarilo sa načítať.'; playerImage.src = defaultImageUrl; playerImage.style.display = 'block'; playerAudio.style.display = 'none';
+                    // Spracovanie chýb pri načítaní alebo parsovaní RSS
+                    console.error("Nepodarilo sa načítať RSS feed:", error);
+                    rssError.textContent = `Chyba načítania podcastu: ${error.message}.`;
+                    rssError.style.display = 'block';
+                    allEpisodesError.textContent = `Chyba načítania epizód: ${error.message}.`;
+                    allEpisodesError.style.display = 'block';
+                    // Zobrazí chybový stav v prehrávači aj v mriežke
+                    playerCard.classList.add('loaded');
+                    playerTitle.textContent = 'Chyba'; playerDate.textContent = '-'; playerDescription.textContent = 'Nepodarilo sa načítať.'; playerImage.src = defaultImageUrl; playerImage.style.display = 'block'; playerAudio.style.display = 'none';
                     allEpisodesGrid.innerHTML = `<p class="col-span-full text-center text-red-700 p-4">${allEpisodesError.textContent}</p>`;
-                    if(loadMoreContainer) loadMoreContainer.style.display = 'none';
+                    if(loadMoreContainer) loadMoreContainer.style.display = 'none'; // Skryje tlačidlo "Načítať ďalšie"
                 });
         }
 
+        /**
+         * Načíta dáta pre sekciu Texty (momentálne používa placeholder dáta).
+         */
         function loadTextsData() {
-            console.log("Loading texts data (placeholders)...");
-            textsGrid.innerHTML = '';
+            console.log("Načítavam dáta pre sekciu Texty (placeholder)...");
+            textsGrid.innerHTML = ''; // Vymaže obsah mriežky (vrátane placeholderu)
 
+            // Placeholder dáta pre texty (nahraďte skutočným načítaním, ak je potrebné)
             const placeholderTexts = [
                 { title: "Prepis: Zmiznutie v lese", excerpt: "Hlboko v hore sa stratil mladý muž. Nikdy ho nenašli, no miestni hovoria o šepotoch medzi stromami a svetlách, ktoré tam nemajú čo robiť...", link: "#" },
                 { title: "Bonus: Pôvod legendy o poludnici", excerpt: "Poludnica, bytosť trestajúca tých, čo nedodržiavajú poludňajší pokoj. Aké sú korene tejto strašidelnej postavy slovanského folklóru?", link: "#" },
                 { title: "Prepis: Dom na konci ulice", excerpt: "Opustený dom, ktorý láka deti svojimi tajomstvami. Ale čo ak dom nechce, aby odišli? Príbeh inšpirovaný skutočnými udalosťami.", link: "#" }
             ];
 
+            // Ak nie sú žiadne texty (ani placeholder), zobrazí správu
             if (placeholderTexts.length === 0) {
                 textsGrid.innerHTML = `<p class="col-span-full text-center text-custom-dark p-4">Momentálne nie sú k dispozícii žiadne texty.</p>`;
                 return;
             }
 
+            // Vytvorí karty pre každý placeholder text
             placeholderTexts.forEach(text => {
                 try {
                     const card = document.createElement('article');
                     card.className = 'bg-custom-card rounded-lg p-5 flex flex-col h-[220px] card-hover-effect border border-transparent hover:border-custom-gold transition-all';
+                    // ÚPRAVA: Odstránený SVG element z tlačidla
                     card.innerHTML = `
                         <h3 class="card-text-title text-custom-gold mb-2">${text.title}</h3>
                         <p class="card-text-excerpt text-custom-dark leading-normal mb-3 flex-grow overflow-hidden">${extractAndShortenText(text.excerpt, maxExcerptLengthTexts)}</p>
                         <button class="read-more-button mt-auto group" onclick="alert('Funkcia Čítať viac ešte nie je implementovaná.')" aria-label="Čítať viac o ${text.title.replace(/"/g, '"')}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" class="fill-current transition-transform duration-300 group-hover:scale-110" viewBox="0 0 16 16" aria-hidden="true"> <path d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388 1.17.953.712 1.04 1.73.108 2.686-.744.75-1.898 1.134-3.174 1.233C11.253 7.128 10 6.6 8.5 5.66z"/> <path d="M16 14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V1.5A.5.5 0 0 1 4.5 1H6v10.5A1.5 1.5 0 0 0 7.5 13h7a.5.5 0 0 1 .5.5"/> </svg>
-                             <span class="relative">Čítať viac<span class="absolute left-0 -bottom-0.5 w-0 h-0.5 bg-custom-dark group-hover:w-full transition-all duration-300"></span></span>
+                            <span class="relative">Čítať viac<span class="absolute left-0 -bottom-0.5 w-0 h-0.5 bg-custom-dark group-hover:w-full transition-all duration-300"></span></span>
                         </button>`;
                     textsGrid.appendChild(card);
-                } catch (e) { console.error("Error creating text card:", e); }
+                } catch (e) { console.error("Chyba pri vytváraní karty textu:", e); }
             });
-            console.log(`Populated texts grid with ${textsGrid.children.length} placeholder items.`);
+            console.log(`Mriežka textov naplnená ${textsGrid.children.length} placeholder položkami.`);
         }
 
 
         // --- Initialization ---
+        // Spustí sa po načítaní celého HTML DOMu
         document.addEventListener('DOMContentLoaded', () => {
+            // Pridá event listener pre kliknutia na tlačidlá "Prehrať" v mriežke (delegácia udalostí)
             allEpisodesGrid.addEventListener('click', handlePlayButtonClick);
+
+            // Pridá event listener pre tlačidlo "Načítať ďalšie epizódy"
             if (loadMoreButton) {
                 loadMoreButton.addEventListener('click', loadMoreEpisodes);
             }
+
+            // Načíta dáta z RSS a placeholder texty
             loadRssData();
             loadTextsData();
-            console.log("DOM loaded. Initializing page.");
+
+            console.log("DOM načítaný. Inicializujem stránku.");
         });
 
     </script>
