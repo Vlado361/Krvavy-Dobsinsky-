@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kontakt | Krvavý Dobšinský</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      background-color: #e6d3b3;
+      color: #4c0e0e;
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+    h1 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.25rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: inherit;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 2rem;
+      background-color: #4c0e0e;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background-color: #6f1e1e;
+    }
+  </style>
+</head>
+<body>
+  <h1>Napíš nám</h1>
+  <form name="kontakt" method="POST" data-netlify="true">
+    <input type="hidden" name="form-name" value="kontakt" />
+    <label for="meno">Meno</label>
+    <input type="text" name="meno" id="meno" required />
+
+    <label for="email">Email</label>
+    <input type="email" name="email" id="email" required />
+
+    <label for="sprava">Správa</label>
+    <textarea name="sprava" id="sprava" required></textarea>
+
+    <button type="submit">Odoslať</button>
+  </form>
+</body>
+</html>
